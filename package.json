@@ -5,10 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "proto": "./node_modules/protobufjs/bin/pbjs -t static-module --es6 -w commonjs -o ./src/proto/proto.js ./src/proto/*.proto --no-convert --no-comments"
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "protobufjs": "^6.10.1",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -26,8 +28,7 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "plugin:vue/essential"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
