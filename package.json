@@ -6,9 +6,10 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "proto": "./node_modules/protobufjs/bin/pbjs -t static-module --es6 -w commonjs -o ./src/proto/proto.js ./src/proto/*.proto --no-convert --no-comments"
+    "proto": "./node_modules/protobufjs/bin/pbjs -t static-module -w commonjs -o ./src/proto/proto.js ./src/proto/*.proto --no-convert --no-comments"
   },
   "dependencies": {
+    "ant-design-vue": "^1.7.2",
     "core-js": "^3.6.5",
     "protobufjs": "^6.10.1",
     "vue": "^2.6.11"

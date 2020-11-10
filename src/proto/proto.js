@@ -3,39 +3,39 @@
 
 var $protobuf = require("protobufjs/minimal");
 
-const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
-const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const github = $root.github = (() => {
+$root.github = (function() {
 
-    const github = {};
+    var github = {};
 
     github.com = (function() {
 
-        const com = {};
+        var com = {};
 
         com.nevercase = (function() {
 
-            const nevercase = {};
+            var nevercase = {};
 
             nevercase.publisher = (function() {
 
-                const publisher = {};
+                var publisher = {};
 
                 publisher.pkg = (function() {
 
-                    const pkg = {};
+                    var pkg = {};
 
                     pkg.types = (function() {
 
-                        const types = {};
+                        var types = {};
 
                         types.CompleteStepRequest = (function() {
 
                             function CompleteStepRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -70,9 +70,9 @@ export const github = $root.github = (() => {
                             CompleteStepRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.CompleteStepRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.CompleteStepRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.namespace = reader.string();
@@ -113,7 +113,7 @@ export const github = $root.github = (() => {
                                     if (!$util.isString(message.runnerName))
                                         return "runnerName: string expected";
                                 if (message.step != null && message.hasOwnProperty("step")) {
-                                    let error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.step);
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.step);
                                     if (error)
                                         return "step." + error;
                                 }
@@ -127,7 +127,7 @@ export const github = $root.github = (() => {
 
                             function CompleteStepResponse(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -149,9 +149,9 @@ export const github = $root.github = (() => {
                             CompleteStepResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.CompleteStepResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.CompleteStepResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -182,7 +182,7 @@ export const github = $root.github = (() => {
                                 this.tasks = [];
                                 this.runners = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -198,10 +198,10 @@ export const github = $root.github = (() => {
                                 if (!writer)
                                     writer = $Writer.create();
                                 if (message.tasks != null && message.tasks.length)
-                                    for (let i = 0; i < message.tasks.length; ++i)
+                                    for (var i = 0; i < message.tasks.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.Task.encode(message.tasks[i], writer.uint32(10).fork()).ldelim();
                                 if (message.runners != null && message.runners.length)
-                                    for (let i = 0; i < message.runners.length; ++i)
+                                    for (var i = 0; i < message.runners.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.encode(message.runners[i], writer.uint32(18).fork()).ldelim();
                                 return writer;
                             };
@@ -213,9 +213,9 @@ export const github = $root.github = (() => {
                             Group.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Group();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Group();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         if (!(message.tasks && message.tasks.length))
@@ -247,8 +247,8 @@ export const github = $root.github = (() => {
                                 if (message.tasks != null && message.hasOwnProperty("tasks")) {
                                     if (!Array.isArray(message.tasks))
                                         return "tasks: array expected";
-                                    for (let i = 0; i < message.tasks.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.Task.verify(message.tasks[i]);
+                                    for (var i = 0; i < message.tasks.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.Task.verify(message.tasks[i]);
                                         if (error)
                                             return "tasks." + error;
                                     }
@@ -256,8 +256,8 @@ export const github = $root.github = (() => {
                                 if (message.runners != null && message.hasOwnProperty("runners")) {
                                     if (!Array.isArray(message.runners))
                                         return "runners: array expected";
-                                    for (let i = 0; i < message.runners.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runners[i]);
+                                    for (var i = 0; i < message.runners.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runners[i]);
                                         if (error)
                                             return "runners." + error;
                                     }
@@ -272,7 +272,7 @@ export const github = $root.github = (() => {
 
                             function ListGroupNameRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -298,9 +298,9 @@ export const github = $root.github = (() => {
                             ListGroupNameRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListGroupNameRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListGroupNameRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.namespace = reader.string();
@@ -336,7 +336,7 @@ export const github = $root.github = (() => {
                             function ListGroupNameResponse(properties) {
                                 this.items = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -351,7 +351,7 @@ export const github = $root.github = (() => {
                                 if (!writer)
                                     writer = $Writer.create();
                                 if (message.items != null && message.items.length)
-                                    for (let i = 0; i < message.items.length; ++i)
+                                    for (var i = 0; i < message.items.length; ++i)
                                         writer.uint32(10).string(message.items[i]);
                                 return writer;
                             };
@@ -363,9 +363,9 @@ export const github = $root.github = (() => {
                             ListGroupNameResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListGroupNameResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListGroupNameResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         if (!(message.items && message.items.length))
@@ -392,7 +392,7 @@ export const github = $root.github = (() => {
                                 if (message.items != null && message.hasOwnProperty("items")) {
                                     if (!Array.isArray(message.items))
                                         return "items: array expected";
-                                    for (let i = 0; i < message.items.length; ++i)
+                                    for (var i = 0; i < message.items.length; ++i)
                                         if (!$util.isString(message.items[i]))
                                             return "items: string[] expected";
                                 }
@@ -406,7 +406,7 @@ export const github = $root.github = (() => {
 
                             function ListNamespaceRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -428,9 +428,9 @@ export const github = $root.github = (() => {
                             ListNamespaceRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListNamespaceRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListNamespaceRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -460,7 +460,7 @@ export const github = $root.github = (() => {
                             function ListNamespaceResponse(properties) {
                                 this.items = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -475,7 +475,7 @@ export const github = $root.github = (() => {
                                 if (!writer)
                                     writer = $Writer.create();
                                 if (message.items != null && message.items.length)
-                                    for (let i = 0; i < message.items.length; ++i)
+                                    for (var i = 0; i < message.items.length; ++i)
                                         writer.uint32(10).string(message.items[i]);
                                 return writer;
                             };
@@ -487,9 +487,9 @@ export const github = $root.github = (() => {
                             ListNamespaceResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListNamespaceResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListNamespaceResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         if (!(message.items && message.items.length))
@@ -516,7 +516,7 @@ export const github = $root.github = (() => {
                                 if (message.items != null && message.hasOwnProperty("items")) {
                                     if (!Array.isArray(message.items))
                                         return "items: array expected";
-                                    for (let i = 0; i < message.items.length; ++i)
+                                    for (var i = 0; i < message.items.length; ++i)
                                         if (!$util.isString(message.items[i]))
                                             return "items: string[] expected";
                                 }
@@ -530,7 +530,7 @@ export const github = $root.github = (() => {
 
                             function ListTaskRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -565,9 +565,9 @@ export const github = $root.github = (() => {
                             ListTaskRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListTaskRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListTaskRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.namespace = reader.string();
@@ -621,7 +621,7 @@ export const github = $root.github = (() => {
                             function ListTaskResponse(properties) {
                                 this.tasks = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -636,7 +636,7 @@ export const github = $root.github = (() => {
                                 if (!writer)
                                     writer = $Writer.create();
                                 if (message.tasks != null && message.tasks.length)
-                                    for (let i = 0; i < message.tasks.length; ++i)
+                                    for (var i = 0; i < message.tasks.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.Task.encode(message.tasks[i], writer.uint32(10).fork()).ldelim();
                                 return writer;
                             };
@@ -648,9 +648,9 @@ export const github = $root.github = (() => {
                             ListTaskResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListTaskResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListTaskResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         if (!(message.tasks && message.tasks.length))
@@ -677,8 +677,8 @@ export const github = $root.github = (() => {
                                 if (message.tasks != null && message.hasOwnProperty("tasks")) {
                                     if (!Array.isArray(message.tasks))
                                         return "tasks: array expected";
-                                    for (let i = 0; i < message.tasks.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.Task.verify(message.tasks[i]);
+                                    for (var i = 0; i < message.tasks.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.Task.verify(message.tasks[i]);
                                         if (error)
                                             return "tasks." + error;
                                     }
@@ -693,7 +693,7 @@ export const github = $root.github = (() => {
 
                             function LogStreamRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -731,9 +731,9 @@ export const github = $root.github = (() => {
                             LogStreamRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.LogStreamRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.LogStreamRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.namespace = reader.string();
@@ -792,7 +792,7 @@ export const github = $root.github = (() => {
 
                             function LogStreamResponse(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -814,9 +814,9 @@ export const github = $root.github = (() => {
                             LogStreamResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.LogStreamResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.LogStreamResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -845,7 +845,7 @@ export const github = $root.github = (() => {
 
                             function PingRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -867,9 +867,9 @@ export const github = $root.github = (() => {
                             PingRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.PingRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.PingRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -898,7 +898,7 @@ export const github = $root.github = (() => {
 
                             function PongResponse(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -920,9 +920,9 @@ export const github = $root.github = (() => {
                             PongResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.PongResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.PongResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -951,7 +951,7 @@ export const github = $root.github = (() => {
 
                             function RegisterRunnerRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -977,9 +977,9 @@ export const github = $root.github = (() => {
                             RegisterRunnerRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RegisterRunnerRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RegisterRunnerRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.runnerInfo = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.decode(reader, reader.uint32());
@@ -1002,7 +1002,7 @@ export const github = $root.github = (() => {
                                 if (typeof message !== "object" || message === null)
                                     return "object expected";
                                 if (message.runnerInfo != null && message.hasOwnProperty("runnerInfo")) {
-                                    let error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runnerInfo);
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runnerInfo);
                                     if (error)
                                         return "runnerInfo." + error;
                                 }
@@ -1016,7 +1016,7 @@ export const github = $root.github = (() => {
 
                             function RegisterRunnerResponse(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1038,9 +1038,9 @@ export const github = $root.github = (() => {
                             RegisterRunnerResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RegisterRunnerResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RegisterRunnerResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -1069,7 +1069,7 @@ export const github = $root.github = (() => {
 
                             function Request(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1098,9 +1098,9 @@ export const github = $root.github = (() => {
                             Request.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Request();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Request();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.type = $root.github.com.nevercase.publisher.pkg.types.Type.decode(reader, reader.uint32());
@@ -1126,7 +1126,7 @@ export const github = $root.github = (() => {
                                 if (typeof message !== "object" || message === null)
                                     return "object expected";
                                 if (message.type != null && message.hasOwnProperty("type")) {
-                                    let error = $root.github.com.nevercase.publisher.pkg.types.Type.verify(message.type);
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.Type.verify(message.type);
                                     if (error)
                                         return "type." + error;
                                 }
@@ -1143,7 +1143,7 @@ export const github = $root.github = (() => {
 
                             function Response(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1178,9 +1178,9 @@ export const github = $root.github = (() => {
                             Response.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Response();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Response();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.code = reader.int32();
@@ -1218,7 +1218,7 @@ export const github = $root.github = (() => {
                                     if (!$util.isString(message.message))
                                         return "message: string expected";
                                 if (message.type != null && message.hasOwnProperty("type")) {
-                                    let error = $root.github.com.nevercase.publisher.pkg.types.Type.verify(message.type);
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.Type.verify(message.type);
                                     if (error)
                                         return "type." + error;
                                 }
@@ -1236,7 +1236,7 @@ export const github = $root.github = (() => {
                             function Result(properties) {
                                 this.items = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1251,7 +1251,7 @@ export const github = $root.github = (() => {
                                 if (!writer)
                                     writer = $Writer.create();
                                 if (message.items != null && message.items.length)
-                                    for (let i = 0; i < message.items.length; ++i)
+                                    for (var i = 0; i < message.items.length; ++i)
                                         writer.uint32(10).string(message.items[i]);
                                 return writer;
                             };
@@ -1263,9 +1263,9 @@ export const github = $root.github = (() => {
                             Result.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Result();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Result();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         if (!(message.items && message.items.length))
@@ -1292,7 +1292,7 @@ export const github = $root.github = (() => {
                                 if (message.items != null && message.hasOwnProperty("items")) {
                                     if (!Array.isArray(message.items))
                                         return "items: array expected";
-                                    for (let i = 0; i < message.items.length; ++i)
+                                    for (var i = 0; i < message.items.length; ++i)
                                         if (!$util.isString(message.items[i]))
                                             return "items: string[] expected";
                                 }
@@ -1306,7 +1306,7 @@ export const github = $root.github = (() => {
 
                             function RunStepRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1341,9 +1341,9 @@ export const github = $root.github = (() => {
                             RunStepRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RunStepRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RunStepRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.namespace = reader.string();
@@ -1384,7 +1384,7 @@ export const github = $root.github = (() => {
                                     if (!$util.isString(message.runnerName))
                                         return "runnerName: string expected";
                                 if (message.step != null && message.hasOwnProperty("step")) {
-                                    let error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.step);
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.step);
                                     if (error)
                                         return "step." + error;
                                 }
@@ -1398,7 +1398,7 @@ export const github = $root.github = (() => {
 
                             function RunStepResponse(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1420,9 +1420,9 @@ export const github = $root.github = (() => {
                             RunStepResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RunStepResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RunStepResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -1452,7 +1452,7 @@ export const github = $root.github = (() => {
                             function RunnerInfo(properties) {
                                 this.steps = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1482,7 +1482,7 @@ export const github = $root.github = (() => {
                                 if (message.runnerType != null && Object.hasOwnProperty.call(message, "runnerType"))
                                     writer.uint32(42).string(message.runnerType);
                                 if (message.steps != null && message.steps.length)
-                                    for (let i = 0; i < message.steps.length; ++i)
+                                    for (var i = 0; i < message.steps.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.Step.encode(message.steps[i], writer.uint32(50).fork()).ldelim();
                                 return writer;
                             };
@@ -1494,9 +1494,9 @@ export const github = $root.github = (() => {
                             RunnerInfo.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RunnerInfo();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.RunnerInfo();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.name = reader.string();
@@ -1553,8 +1553,8 @@ export const github = $root.github = (() => {
                                 if (message.steps != null && message.hasOwnProperty("steps")) {
                                     if (!Array.isArray(message.steps))
                                         return "steps: array expected";
-                                    for (let i = 0; i < message.steps.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.steps[i]);
+                                    for (var i = 0; i < message.steps.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.steps[i]);
                                         if (error)
                                             return "steps." + error;
                                     }
@@ -1574,7 +1574,7 @@ export const github = $root.github = (() => {
                                 this.writeFiles = [];
                                 this.messages = [];
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1606,19 +1606,19 @@ export const github = $root.github = (() => {
                                 if (message.policy != null && Object.hasOwnProperty.call(message, "policy"))
                                     writer.uint32(34).string(message.policy);
                                 if (message.envs != null && Object.hasOwnProperty.call(message, "envs"))
-                                    for (let keys = Object.keys(message.envs), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(message.envs), i = 0; i < keys.length; ++i)
                                         writer.uint32(42).fork().uint32(10).string(keys[i]).uint32(18).string(message.envs[keys[i]]).ldelim();
                                 if (message.output != null && message.output.length)
-                                    for (let i = 0; i < message.output.length; ++i)
+                                    for (var i = 0; i < message.output.length; ++i)
                                         writer.uint32(50).string(message.output[i]);
                                 if (message.uploadFiles != null && message.uploadFiles.length)
-                                    for (let i = 0; i < message.uploadFiles.length; ++i)
+                                    for (var i = 0; i < message.uploadFiles.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.UploadFile.encode(message.uploadFiles[i], writer.uint32(58).fork()).ldelim();
                                 if (message.writeFiles != null && message.writeFiles.length)
-                                    for (let i = 0; i < message.writeFiles.length; ++i)
+                                    for (var i = 0; i < message.writeFiles.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.WriteFile.encode(message.writeFiles[i], writer.uint32(66).fork()).ldelim();
                                 if (message.messages != null && message.messages.length)
-                                    for (let i = 0; i < message.messages.length; ++i)
+                                    for (var i = 0; i < message.messages.length; ++i)
                                         writer.uint32(74).string(message.messages[i]);
                                 if (message.runnerName != null && Object.hasOwnProperty.call(message, "runnerName"))
                                     writer.uint32(82).string(message.runnerName);
@@ -1632,9 +1632,9 @@ export const github = $root.github = (() => {
                             Step.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Step(), key, value;
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Step(), key, value;
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.id = reader.int32();
@@ -1651,11 +1651,11 @@ export const github = $root.github = (() => {
                                     case 5:
                                         if (message.envs === $util.emptyObject)
                                             message.envs = {};
-                                        let end2 = reader.uint32() + reader.pos;
+                                        var end2 = reader.uint32() + reader.pos;
                                         key = "";
                                         value = "";
                                         while (reader.pos < end2) {
-                                            let tag2 = reader.uint32();
+                                            var tag2 = reader.uint32();
                                             switch (tag2 >>> 3) {
                                             case 1:
                                                 key = reader.string();
@@ -1725,23 +1725,23 @@ export const github = $root.github = (() => {
                                 if (message.envs != null && message.hasOwnProperty("envs")) {
                                     if (!$util.isObject(message.envs))
                                         return "envs: object expected";
-                                    let key = Object.keys(message.envs);
-                                    for (let i = 0; i < key.length; ++i)
+                                    var key = Object.keys(message.envs);
+                                    for (var i = 0; i < key.length; ++i)
                                         if (!$util.isString(message.envs[key[i]]))
                                             return "envs: string{k:string} expected";
                                 }
                                 if (message.output != null && message.hasOwnProperty("output")) {
                                     if (!Array.isArray(message.output))
                                         return "output: array expected";
-                                    for (let i = 0; i < message.output.length; ++i)
+                                    for (var i = 0; i < message.output.length; ++i)
                                         if (!$util.isString(message.output[i]))
                                             return "output: string[] expected";
                                 }
                                 if (message.uploadFiles != null && message.hasOwnProperty("uploadFiles")) {
                                     if (!Array.isArray(message.uploadFiles))
                                         return "uploadFiles: array expected";
-                                    for (let i = 0; i < message.uploadFiles.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.UploadFile.verify(message.uploadFiles[i]);
+                                    for (var i = 0; i < message.uploadFiles.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.UploadFile.verify(message.uploadFiles[i]);
                                         if (error)
                                             return "uploadFiles." + error;
                                     }
@@ -1749,8 +1749,8 @@ export const github = $root.github = (() => {
                                 if (message.writeFiles != null && message.hasOwnProperty("writeFiles")) {
                                     if (!Array.isArray(message.writeFiles))
                                         return "writeFiles: array expected";
-                                    for (let i = 0; i < message.writeFiles.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.WriteFile.verify(message.writeFiles[i]);
+                                    for (var i = 0; i < message.writeFiles.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.WriteFile.verify(message.writeFiles[i]);
                                         if (error)
                                             return "writeFiles." + error;
                                     }
@@ -1758,7 +1758,7 @@ export const github = $root.github = (() => {
                                 if (message.messages != null && message.hasOwnProperty("messages")) {
                                     if (!Array.isArray(message.messages))
                                         return "messages: array expected";
-                                    for (let i = 0; i < message.messages.length; ++i)
+                                    for (var i = 0; i < message.messages.length; ++i)
                                         if (!$util.isString(message.messages[i]))
                                             return "messages: string[] expected";
                                 }
@@ -1776,7 +1776,7 @@ export const github = $root.github = (() => {
                             function Task(properties) {
                                 this.runners = {};
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1794,7 +1794,7 @@ export const github = $root.github = (() => {
                                 if (message.id != null && Object.hasOwnProperty.call(message, "id"))
                                     writer.uint32(8).int32(message.id);
                                 if (message.runners != null && Object.hasOwnProperty.call(message, "runners"))
-                                    for (let keys = Object.keys(message.runners), i = 0; i < keys.length; ++i) {
+                                    for (var keys = Object.keys(message.runners), i = 0; i < keys.length; ++i) {
                                         writer.uint32(18).fork().uint32(10).string(keys[i]);
                                         $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.encode(message.runners[keys[i]], writer.uint32(18).fork()).ldelim().ldelim();
                                     }
@@ -1808,9 +1808,9 @@ export const github = $root.github = (() => {
                             Task.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Task(), key, value;
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Task(), key, value;
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.id = reader.int32();
@@ -1818,11 +1818,11 @@ export const github = $root.github = (() => {
                                     case 2:
                                         if (message.runners === $util.emptyObject)
                                             message.runners = {};
-                                        let end2 = reader.uint32() + reader.pos;
+                                        var end2 = reader.uint32() + reader.pos;
                                         key = "";
                                         value = null;
                                         while (reader.pos < end2) {
-                                            let tag2 = reader.uint32();
+                                            var tag2 = reader.uint32();
                                             switch (tag2 >>> 3) {
                                             case 1:
                                                 key = reader.string();
@@ -1860,9 +1860,9 @@ export const github = $root.github = (() => {
                                 if (message.runners != null && message.hasOwnProperty("runners")) {
                                     if (!$util.isObject(message.runners))
                                         return "runners: object expected";
-                                    let key = Object.keys(message.runners);
-                                    for (let i = 0; i < key.length; ++i) {
-                                        let error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runners[key[i]]);
+                                    var key = Object.keys(message.runners);
+                                    for (var i = 0; i < key.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runners[key[i]]);
                                         if (error)
                                             return "runners." + error;
                                     }
@@ -1877,7 +1877,7 @@ export const github = $root.github = (() => {
 
                             function Type(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1906,9 +1906,9 @@ export const github = $root.github = (() => {
                             Type.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Type();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Type();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.body = reader.string();
@@ -1949,7 +1949,7 @@ export const github = $root.github = (() => {
 
                             function UpdateStepRequest(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -1984,9 +1984,9 @@ export const github = $root.github = (() => {
                             UpdateStepRequest.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.UpdateStepRequest();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.UpdateStepRequest();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.namespace = reader.string();
@@ -2027,7 +2027,7 @@ export const github = $root.github = (() => {
                                     if (!$util.isString(message.runnerName))
                                         return "runnerName: string expected";
                                 if (message.step != null && message.hasOwnProperty("step")) {
-                                    let error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.step);
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.Step.verify(message.step);
                                     if (error)
                                         return "step." + error;
                                 }
@@ -2041,7 +2041,7 @@ export const github = $root.github = (() => {
 
                             function UpdateStepResponse(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -2063,9 +2063,9 @@ export const github = $root.github = (() => {
                             UpdateStepResponse.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.UpdateStepResponse();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.UpdateStepResponse();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     default:
                                         reader.skipType(tag & 7);
@@ -2094,7 +2094,7 @@ export const github = $root.github = (() => {
 
                             function UploadFile(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -2126,9 +2126,9 @@ export const github = $root.github = (() => {
                             UploadFile.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.UploadFile();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.UploadFile();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.sourceFile = reader.string();
@@ -2175,7 +2175,7 @@ export const github = $root.github = (() => {
 
                             function WriteFile(properties) {
                                 if (properties)
-                                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
                                             this[keys[i]] = properties[keys[i]];
                             }
@@ -2204,9 +2204,9 @@ export const github = $root.github = (() => {
                             WriteFile.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.WriteFile();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.WriteFile();
                                 while (reader.pos < end) {
-                                    let tag = reader.uint32();
+                                    var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1:
                                         message.content = reader.bytes();
