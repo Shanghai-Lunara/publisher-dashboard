@@ -526,6 +526,151 @@ $root.github = (function() {
                             return ListNamespaceResponse;
                         })();
 
+                        types.ListRunnerRequest = (function() {
+
+                            function ListRunnerRequest(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+
+                            ListRunnerRequest.prototype.namespace = "";
+                            ListRunnerRequest.prototype.groupName = "";
+
+                            ListRunnerRequest.create = function create(properties) {
+                                return new ListRunnerRequest(properties);
+                            };
+
+                            ListRunnerRequest.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.namespace != null && Object.hasOwnProperty.call(message, "namespace"))
+                                    writer.uint32(10).string(message.namespace);
+                                if (message.groupName != null && Object.hasOwnProperty.call(message, "groupName"))
+                                    writer.uint32(18).string(message.groupName);
+                                return writer;
+                            };
+
+                            ListRunnerRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+
+                            ListRunnerRequest.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListRunnerRequest();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        message.namespace = reader.string();
+                                        break;
+                                    case 2:
+                                        message.groupName = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+
+                            ListRunnerRequest.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+
+                            ListRunnerRequest.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.namespace != null && message.hasOwnProperty("namespace"))
+                                    if (!$util.isString(message.namespace))
+                                        return "namespace: string expected";
+                                if (message.groupName != null && message.hasOwnProperty("groupName"))
+                                    if (!$util.isString(message.groupName))
+                                        return "groupName: string expected";
+                                return null;
+                            };
+
+                            return ListRunnerRequest;
+                        })();
+
+                        types.ListRunnerResponse = (function() {
+
+                            function ListRunnerResponse(properties) {
+                                this.runners = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+
+                            ListRunnerResponse.prototype.runners = $util.emptyArray;
+
+                            ListRunnerResponse.create = function create(properties) {
+                                return new ListRunnerResponse(properties);
+                            };
+
+                            ListRunnerResponse.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.runners != null && message.runners.length)
+                                    for (var i = 0; i < message.runners.length; ++i)
+                                        $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.encode(message.runners[i], writer.uint32(10).fork()).ldelim();
+                                return writer;
+                            };
+
+                            ListRunnerResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+
+                            ListRunnerResponse.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListRunnerResponse();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        if (!(message.runners && message.runners.length))
+                                            message.runners = [];
+                                        message.runners.push($root.github.com.nevercase.publisher.pkg.types.RunnerInfo.decode(reader, reader.uint32()));
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+
+                            ListRunnerResponse.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+
+                            ListRunnerResponse.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.runners != null && message.hasOwnProperty("runners")) {
+                                    if (!Array.isArray(message.runners))
+                                        return "runners: array expected";
+                                    for (var i = 0; i < message.runners.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runners[i]);
+                                        if (error)
+                                            return "runners." + error;
+                                    }
+                                }
+                                return null;
+                            };
+
+                            return ListRunnerResponse;
+                        })();
+
                         types.ListTaskRequest = (function() {
 
                             function ListTaskRequest(properties) {
