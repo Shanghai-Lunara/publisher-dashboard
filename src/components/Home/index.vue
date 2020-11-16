@@ -35,28 +35,28 @@
             :width="840"
             :visible="visible"
             :body-style="{ paddingBottom: '80px' }"
-            @close="onClose"
+            @close="onClose('flag')"
           >
             <a-form :form="form" layout="vertical" hide-required-mark>
               <a-row :gutter="16">
                 <a-col :span="12">
                   <a-form-item label="Name">
-                    <!-- <a-input :value="form.name" disabled /> -->
-                    <a-input v-decorator="[ 'name' ]"></a-input>
+                    <a-input :value="form.name" disabled />
+                    <!-- <a-input v-decorator="[ 'name' ]"></a-input> -->
                   </a-form-item>
                 </a-col>
                 <a-col :span="12">
                   <a-form-item label="runnerName">
-                    <!-- <a-input :value="form.runnerName" disabled /> -->
-                    <a-input v-decorator="[ 'runnerName' ]"></a-input>
+                    <a-input :value="form.runnerName" disabled />
+                    <!-- <a-input v-decorator="[ 'runnerName' ]"></a-input> -->
                   </a-form-item>
                 </a-col>
               </a-row>
               <a-row :gutter="16">
                 <a-col :span="12">
                   <a-form-item label="policy">
-                    <a-select v-decorator="[ 'policy' ]">
-                    <!-- <a-select v-model="form.policy"> -->
+                    <!-- <a-select v-decorator="[ 'policy' ]"> -->
+                    <a-select v-model="form.policy">
                       <a-select-option value="auto">
                         auto
                       </a-select-option>
@@ -180,7 +180,7 @@ export default {
       current: -1,
       
       // drawer
-      form: '',
+      form: this.$form.createForm(this),
       visible: false,
 
       activeKey: [],
@@ -267,12 +267,14 @@ export default {
         //   let task = proto.ListTaskResponse.decode(message.data)
         //   break
         case 'ListRunner':
-          // console.log('runer')
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
 
           console.log(_self.runner_list)
 
+          break
+        case 'UpdateStep':
+          console.log(message)
           break
         case 'Ping':
             break
@@ -282,42 +284,43 @@ export default {
       }
     },
     collChange(value) {
-      console.log(value)
       this.run_id = value
       this.current = -1
+      this.dataSource = []
+      this.$forceUpdate()
     },
     stepChange(index) {
-      console.log(this.run_id)
-      console.log(index)
 
       this.current = index
 
-      this.$form.createForm(this)
-
-      console.log(this.runner_list[this.run_id])
-
       this.form = this.runner_list[this.run_id]['steps'][index]
-
-      // console.log(this.form)
 
       let arr = []
       let i = 0
 
-      for (let key in this.form['envs']) {
+      for (let key in this.runner_list[this.run_id]['steps'][index]['envs']) {
         arr.push({
           key: i,
           name: key,
-          value: this.form['envs'][key],
+          value: this.runner_list[this.run_id]['steps'][index]['envs'][key],
         })
 
         i++
       }
 
       this.dataSource = arr
-
       this.visible = true
+
+      // this.$nextTick(() => {
+      //   this.form.setFieldsValue(this.runner_list[this.run_id]['steps'][index])
+      //   // this.$forceUpdate()
+	    // })  
     },
     onClose(type) {
+
+      if (type == 'flag') {
+        return
+      }
 
       let proto = this.$proto.github.com.nevercase.publisher.pkg.types
 
@@ -343,28 +346,29 @@ export default {
 
       this.visible = false;
 
-      console.log(this.form)
+      let info = {
+        namespace: this.cur_namespace,
+        groupName: this.cur_group,
+        runnerName: this.runner_list[this.run_id]['name'],
+        step: this.form
+      }
 
-      // let info = {
-      //   namespace: this.cur_namespace,
-      //   groupName: this.cur_group,
-      //   runnerName: this.runner_list[this.run_id]['steps'][this.current]['name'],
-      //   step: this.form
-      // }
+      if (type == 'update') {
+        data = proto.UpdateStepRequest.create(info)
+        sendData = proto.UpdateStepRequest.encode(data).finish()
+      } else {
+        data = proto.RunStepRequest.create(info)
+        sendData = proto.RunStepRequest.encode(data).finish()
+      }
 
-      // if (type == 'update') {
-      //   data = proto.UpdateStepRequest.create(info)
-      //   sendData = proto.UpdateStepRequest.encode(data).finish()
-      // } else {
-      //   data = proto.RunStepRequest.create(info)
-      //   sendData = proto.RunStepRequest.encode(data).finish()
-      // }
+      console.log(sendData)
 
-      // let _self = this
+      let new_data = {
+          body: 'Dashboard',
+          serviceApi: 'UpdateStep'
+      }
 
-      // this.$socket(sendData, function(res) {
-      //   _self.returnRes(res, _self)
-      // })
+      this.initQuest(new_data, proto, sendData)
       
     },
     spaceChange(value) {
