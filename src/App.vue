@@ -7,7 +7,7 @@
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
 
-import Home from './components/Home'
+import Home from './components/Whb'
 
 export default {
   name: 'App',
