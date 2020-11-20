@@ -526,6 +526,189 @@ $root.github = (function() {
                             return ListNamespaceResponse;
                         })();
 
+                        types.ListRecordsRequest = (function() {
+
+                            function ListRecordsRequest(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+
+                            ListRecordsRequest.prototype.namespace = "";
+                            ListRecordsRequest.prototype.groupName = "";
+                            ListRecordsRequest.prototype.runnerName = "";
+                            ListRecordsRequest.prototype.page = 0;
+                            ListRecordsRequest.prototype.length = 0;
+
+                            ListRecordsRequest.create = function create(properties) {
+                                return new ListRecordsRequest(properties);
+                            };
+
+                            ListRecordsRequest.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.namespace != null && Object.hasOwnProperty.call(message, "namespace"))
+                                    writer.uint32(10).string(message.namespace);
+                                if (message.groupName != null && Object.hasOwnProperty.call(message, "groupName"))
+                                    writer.uint32(18).string(message.groupName);
+                                if (message.runnerName != null && Object.hasOwnProperty.call(message, "runnerName"))
+                                    writer.uint32(26).string(message.runnerName);
+                                if (message.page != null && Object.hasOwnProperty.call(message, "page"))
+                                    writer.uint32(32).int32(message.page);
+                                if (message.length != null && Object.hasOwnProperty.call(message, "length"))
+                                    writer.uint32(40).int32(message.length);
+                                return writer;
+                            };
+
+                            ListRecordsRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+
+                            ListRecordsRequest.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListRecordsRequest();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        message.namespace = reader.string();
+                                        break;
+                                    case 2:
+                                        message.groupName = reader.string();
+                                        break;
+                                    case 3:
+                                        message.runnerName = reader.string();
+                                        break;
+                                    case 4:
+                                        message.page = reader.int32();
+                                        break;
+                                    case 5:
+                                        message.length = reader.int32();
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+
+                            ListRecordsRequest.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+
+                            ListRecordsRequest.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.namespace != null && message.hasOwnProperty("namespace"))
+                                    if (!$util.isString(message.namespace))
+                                        return "namespace: string expected";
+                                if (message.groupName != null && message.hasOwnProperty("groupName"))
+                                    if (!$util.isString(message.groupName))
+                                        return "groupName: string expected";
+                                if (message.runnerName != null && message.hasOwnProperty("runnerName"))
+                                    if (!$util.isString(message.runnerName))
+                                        return "runnerName: string expected";
+                                if (message.page != null && message.hasOwnProperty("page"))
+                                    if (!$util.isInteger(message.page))
+                                        return "page: integer expected";
+                                if (message.length != null && message.hasOwnProperty("length"))
+                                    if (!$util.isInteger(message.length))
+                                        return "length: integer expected";
+                                return null;
+                            };
+
+                            return ListRecordsRequest;
+                        })();
+
+                        types.ListRecordsResponse = (function() {
+
+                            function ListRecordsResponse(properties) {
+                                this.records = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+
+                            ListRecordsResponse.prototype.namespace = null;
+                            ListRecordsResponse.prototype.records = $util.emptyArray;
+
+                            ListRecordsResponse.create = function create(properties) {
+                                return new ListRecordsResponse(properties);
+                            };
+
+                            ListRecordsResponse.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.namespace != null && Object.hasOwnProperty.call(message, "namespace"))
+                                    $root.github.com.nevercase.publisher.pkg.types.ListRecordsRequest.encode(message.namespace, writer.uint32(10).fork()).ldelim();
+                                if (message.records != null && message.records.length)
+                                    for (var i = 0; i < message.records.length; ++i)
+                                        $root.github.com.nevercase.publisher.pkg.types.Record.encode(message.records[i], writer.uint32(18).fork()).ldelim();
+                                return writer;
+                            };
+
+                            ListRecordsResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+
+                            ListRecordsResponse.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListRecordsResponse();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        message.namespace = $root.github.com.nevercase.publisher.pkg.types.ListRecordsRequest.decode(reader, reader.uint32());
+                                        break;
+                                    case 2:
+                                        if (!(message.records && message.records.length))
+                                            message.records = [];
+                                        message.records.push($root.github.com.nevercase.publisher.pkg.types.Record.decode(reader, reader.uint32()));
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+
+                            ListRecordsResponse.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+
+                            ListRecordsResponse.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.namespace != null && message.hasOwnProperty("namespace")) {
+                                    var error = $root.github.com.nevercase.publisher.pkg.types.ListRecordsRequest.verify(message.namespace);
+                                    if (error)
+                                        return "namespace." + error;
+                                }
+                                if (message.records != null && message.hasOwnProperty("records")) {
+                                    if (!Array.isArray(message.records))
+                                        return "records: array expected";
+                                    for (var i = 0; i < message.records.length; ++i) {
+                                        var error = $root.github.com.nevercase.publisher.pkg.types.Record.verify(message.records[i]);
+                                        if (error)
+                                            return "records." + error;
+                                    }
+                                }
+                                return null;
+                            };
+
+                            return ListRecordsResponse;
+                        })();
+
                         types.ListRunnerRequest = (function() {
 
                             function ListRunnerRequest(properties) {
@@ -1090,6 +1273,114 @@ $root.github = (function() {
                             };
 
                             return PongResponse;
+                        })();
+
+                        types.Record = (function() {
+
+                            function Record(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+
+                            Record.prototype.id = 0;
+                            Record.prototype.namespace = "";
+                            Record.prototype.groupName = "";
+                            Record.prototype.runnerName = "";
+                            Record.prototype.stepInfo = $util.newBuffer([]);
+                            Record.prototype.createdTM = 0;
+
+                            Record.create = function create(properties) {
+                                return new Record(properties);
+                            };
+
+                            Record.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                                    writer.uint32(8).int32(message.id);
+                                if (message.namespace != null && Object.hasOwnProperty.call(message, "namespace"))
+                                    writer.uint32(18).string(message.namespace);
+                                if (message.groupName != null && Object.hasOwnProperty.call(message, "groupName"))
+                                    writer.uint32(26).string(message.groupName);
+                                if (message.runnerName != null && Object.hasOwnProperty.call(message, "runnerName"))
+                                    writer.uint32(34).string(message.runnerName);
+                                if (message.stepInfo != null && Object.hasOwnProperty.call(message, "stepInfo"))
+                                    writer.uint32(42).bytes(message.stepInfo);
+                                if (message.createdTM != null && Object.hasOwnProperty.call(message, "createdTM"))
+                                    writer.uint32(48).int32(message.createdTM);
+                                return writer;
+                            };
+
+                            Record.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+
+                            Record.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Record();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1:
+                                        message.id = reader.int32();
+                                        break;
+                                    case 2:
+                                        message.namespace = reader.string();
+                                        break;
+                                    case 3:
+                                        message.groupName = reader.string();
+                                        break;
+                                    case 4:
+                                        message.runnerName = reader.string();
+                                        break;
+                                    case 5:
+                                        message.stepInfo = reader.bytes();
+                                        break;
+                                    case 6:
+                                        message.createdTM = reader.int32();
+                                        break;
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+
+                            Record.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+
+                            Record.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.id != null && message.hasOwnProperty("id"))
+                                    if (!$util.isInteger(message.id))
+                                        return "id: integer expected";
+                                if (message.namespace != null && message.hasOwnProperty("namespace"))
+                                    if (!$util.isString(message.namespace))
+                                        return "namespace: string expected";
+                                if (message.groupName != null && message.hasOwnProperty("groupName"))
+                                    if (!$util.isString(message.groupName))
+                                        return "groupName: string expected";
+                                if (message.runnerName != null && message.hasOwnProperty("runnerName"))
+                                    if (!$util.isString(message.runnerName))
+                                        return "runnerName: string expected";
+                                if (message.stepInfo != null && message.hasOwnProperty("stepInfo"))
+                                    if (!(message.stepInfo && typeof message.stepInfo.length === "number" || $util.isString(message.stepInfo)))
+                                        return "stepInfo: buffer expected";
+                                if (message.createdTM != null && message.hasOwnProperty("createdTM"))
+                                    if (!$util.isInteger(message.createdTM))
+                                        return "createdTM: integer expected";
+                                return null;
+                            };
+
+                            return Record;
                         })();
 
                         types.RegisterRunnerRequest = (function() {
@@ -1734,6 +2025,7 @@ $root.github = (function() {
                             Step.prototype.writeFiles = $util.emptyArray;
                             Step.prototype.messages = $util.emptyArray;
                             Step.prototype.runnerName = "";
+                            Step.prototype.durationInMs = 0;
 
                             Step.create = function create(properties) {
                                 return new Step(properties);
@@ -1767,6 +2059,8 @@ $root.github = (function() {
                                         writer.uint32(74).string(message.messages[i]);
                                 if (message.runnerName != null && Object.hasOwnProperty.call(message, "runnerName"))
                                     writer.uint32(82).string(message.runnerName);
+                                if (message.durationInMs != null && Object.hasOwnProperty.call(message, "durationInMs"))
+                                    writer.uint32(88).int32(message.durationInMs);
                                 return writer;
                             };
 
@@ -1837,6 +2131,9 @@ $root.github = (function() {
                                         break;
                                     case 10:
                                         message.runnerName = reader.string();
+                                        break;
+                                    case 11:
+                                        message.durationInMs = reader.int32();
                                         break;
                                     default:
                                         reader.skipType(tag & 7);
@@ -1910,6 +2207,9 @@ $root.github = (function() {
                                 if (message.runnerName != null && message.hasOwnProperty("runnerName"))
                                     if (!$util.isString(message.runnerName))
                                         return "runnerName: string expected";
+                                if (message.durationInMs != null && message.hasOwnProperty("durationInMs"))
+                                    if (!$util.isInteger(message.durationInMs))
+                                        return "durationInMs: integer expected";
                                 return null;
                             };
 
