@@ -10,6 +10,7 @@
             mode="inline"
             :style="{ borderRight: 0 }"
             @click="changeName"
+            :selectedKeys="selectKey"
         >
             <a-sub-menu :key="id" v-for="(runinfo, id) in runner_list" @titleClick="clickName">
                 <span slot="title"><a-icon type="laptop" />{{runinfo.name}}</span>
@@ -143,9 +144,11 @@ export default {
         logStream: {},
         value: '',
 
-        log: ''
+        log: '',
 
-      
+        // 自动切换
+        selectKey: []
+
     };
   },
   mounted() {
@@ -175,9 +178,9 @@ export default {
         }
     },
     changeName(value) {
-        console.log(value.keyPath)
+        // console.log(value.keyPath)
 
-        this.value = ''
+        this.selectKey = value.keyPath
         
         let index = value.keyPath[1]
         let arr = value.keyPath[0].split(',')
@@ -195,6 +198,21 @@ export default {
         this.flag = true
 
         this.form = info
+
+        // log
+        let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
+
+        let str = ''
+        
+        if (this.logStream.hasOwnProperty(logStr)) {
+            this.logStream[logStr].forEach(element => {
+                str = str + element
+            });
+
+            this.value = str
+        } else {
+            this.value = ''
+        }
         
     },
     clickBtn(type) {
@@ -211,6 +229,8 @@ export default {
         let data = ''
         let sendData = ''
         let api = ''
+
+        this.logStream = {}
 
         if (type === 'run') {
             data = proto.RunStepRequest.create(info)
@@ -290,13 +310,15 @@ export default {
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
 
-          console.log(_self.runner_list)
+        //   console.log(_self.runner_list)
 
           break
         case 'UpdateStep':
-            // console.log('update')
-            // console.log(_self.runner_list)
+            console.log('update')
+
             let upStep = proto.UpdateStepRequest.decode(message.data)
+
+            // console.log(upStep)
 
             let cur_id = ''
 
@@ -318,7 +340,12 @@ export default {
 
             _self.$set(_self.runner_list[cur_id]['steps'], id, upStep['step'])
 
-            // console.log(upStep)
+            let selectStr = upStep['runnerName'] + ',' + upStep['step']['name'] + ',' + id
+
+            _self.cur_stepname = upStep['step']['name']
+
+            _self.selectKey = [selectStr, parseInt(cur_id)]
+
             break
         case 'Runstep':
             console.log('run')
