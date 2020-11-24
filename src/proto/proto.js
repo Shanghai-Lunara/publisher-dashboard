@@ -854,169 +854,6 @@ $root.github = (function() {
                             return ListRunnerResponse;
                         })();
 
-                        types.ListTaskRequest = (function() {
-
-                            function ListTaskRequest(properties) {
-                                if (properties)
-                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                        if (properties[keys[i]] != null)
-                                            this[keys[i]] = properties[keys[i]];
-                            }
-
-                            ListTaskRequest.prototype.namespace = "";
-                            ListTaskRequest.prototype.groupName = "";
-                            ListTaskRequest.prototype.page = 0;
-                            ListTaskRequest.prototype.length = 0;
-
-                            ListTaskRequest.create = function create(properties) {
-                                return new ListTaskRequest(properties);
-                            };
-
-                            ListTaskRequest.encode = function encode(message, writer) {
-                                if (!writer)
-                                    writer = $Writer.create();
-                                if (message.namespace != null && Object.hasOwnProperty.call(message, "namespace"))
-                                    writer.uint32(10).string(message.namespace);
-                                if (message.groupName != null && Object.hasOwnProperty.call(message, "groupName"))
-                                    writer.uint32(18).string(message.groupName);
-                                if (message.page != null && Object.hasOwnProperty.call(message, "page"))
-                                    writer.uint32(24).int32(message.page);
-                                if (message.length != null && Object.hasOwnProperty.call(message, "length"))
-                                    writer.uint32(32).int32(message.length);
-                                return writer;
-                            };
-
-                            ListTaskRequest.encodeDelimited = function encodeDelimited(message, writer) {
-                                return this.encode(message, writer).ldelim();
-                            };
-
-                            ListTaskRequest.decode = function decode(reader, length) {
-                                if (!(reader instanceof $Reader))
-                                    reader = $Reader.create(reader);
-                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListTaskRequest();
-                                while (reader.pos < end) {
-                                    var tag = reader.uint32();
-                                    switch (tag >>> 3) {
-                                    case 1:
-                                        message.namespace = reader.string();
-                                        break;
-                                    case 2:
-                                        message.groupName = reader.string();
-                                        break;
-                                    case 3:
-                                        message.page = reader.int32();
-                                        break;
-                                    case 4:
-                                        message.length = reader.int32();
-                                        break;
-                                    default:
-                                        reader.skipType(tag & 7);
-                                        break;
-                                    }
-                                }
-                                return message;
-                            };
-
-                            ListTaskRequest.decodeDelimited = function decodeDelimited(reader) {
-                                if (!(reader instanceof $Reader))
-                                    reader = new $Reader(reader);
-                                return this.decode(reader, reader.uint32());
-                            };
-
-                            ListTaskRequest.verify = function verify(message) {
-                                if (typeof message !== "object" || message === null)
-                                    return "object expected";
-                                if (message.namespace != null && message.hasOwnProperty("namespace"))
-                                    if (!$util.isString(message.namespace))
-                                        return "namespace: string expected";
-                                if (message.groupName != null && message.hasOwnProperty("groupName"))
-                                    if (!$util.isString(message.groupName))
-                                        return "groupName: string expected";
-                                if (message.page != null && message.hasOwnProperty("page"))
-                                    if (!$util.isInteger(message.page))
-                                        return "page: integer expected";
-                                if (message.length != null && message.hasOwnProperty("length"))
-                                    if (!$util.isInteger(message.length))
-                                        return "length: integer expected";
-                                return null;
-                            };
-
-                            return ListTaskRequest;
-                        })();
-
-                        types.ListTaskResponse = (function() {
-
-                            function ListTaskResponse(properties) {
-                                this.tasks = [];
-                                if (properties)
-                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                        if (properties[keys[i]] != null)
-                                            this[keys[i]] = properties[keys[i]];
-                            }
-
-                            ListTaskResponse.prototype.tasks = $util.emptyArray;
-
-                            ListTaskResponse.create = function create(properties) {
-                                return new ListTaskResponse(properties);
-                            };
-
-                            ListTaskResponse.encode = function encode(message, writer) {
-                                if (!writer)
-                                    writer = $Writer.create();
-                                if (message.tasks != null && message.tasks.length)
-                                    for (var i = 0; i < message.tasks.length; ++i)
-                                        $root.github.com.nevercase.publisher.pkg.types.Task.encode(message.tasks[i], writer.uint32(10).fork()).ldelim();
-                                return writer;
-                            };
-
-                            ListTaskResponse.encodeDelimited = function encodeDelimited(message, writer) {
-                                return this.encode(message, writer).ldelim();
-                            };
-
-                            ListTaskResponse.decode = function decode(reader, length) {
-                                if (!(reader instanceof $Reader))
-                                    reader = $Reader.create(reader);
-                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.ListTaskResponse();
-                                while (reader.pos < end) {
-                                    var tag = reader.uint32();
-                                    switch (tag >>> 3) {
-                                    case 1:
-                                        if (!(message.tasks && message.tasks.length))
-                                            message.tasks = [];
-                                        message.tasks.push($root.github.com.nevercase.publisher.pkg.types.Task.decode(reader, reader.uint32()));
-                                        break;
-                                    default:
-                                        reader.skipType(tag & 7);
-                                        break;
-                                    }
-                                }
-                                return message;
-                            };
-
-                            ListTaskResponse.decodeDelimited = function decodeDelimited(reader) {
-                                if (!(reader instanceof $Reader))
-                                    reader = new $Reader(reader);
-                                return this.decode(reader, reader.uint32());
-                            };
-
-                            ListTaskResponse.verify = function verify(message) {
-                                if (typeof message !== "object" || message === null)
-                                    return "object expected";
-                                if (message.tasks != null && message.hasOwnProperty("tasks")) {
-                                    if (!Array.isArray(message.tasks))
-                                        return "tasks: array expected";
-                                    for (var i = 0; i < message.tasks.length; ++i) {
-                                        var error = $root.github.com.nevercase.publisher.pkg.types.Task.verify(message.tasks[i]);
-                                        if (error)
-                                            return "tasks." + error;
-                                    }
-                                }
-                                return null;
-                            };
-
-                            return ListTaskResponse;
-                        })();
-
                         types.LogStreamRequest = (function() {
 
                             function LogStreamRequest(properties) {
@@ -1289,6 +1126,7 @@ $root.github = (function() {
                             Record.prototype.groupName = "";
                             Record.prototype.runnerName = "";
                             Record.prototype.stepInfo = $util.newBuffer([]);
+                            Record.prototype.stepType = 0;
                             Record.prototype.createdTM = 0;
 
                             Record.create = function create(properties) {
@@ -1309,7 +1147,9 @@ $root.github = (function() {
                                 if (message.stepInfo != null && Object.hasOwnProperty.call(message, "stepInfo"))
                                     writer.uint32(42).bytes(message.stepInfo);
                                 if (message.createdTM != null && Object.hasOwnProperty.call(message, "createdTM"))
-                                    writer.uint32(48).int32(message.createdTM);
+                                    writer.uint32(56).int32(message.createdTM);
+                                if (message.stepType != null && Object.hasOwnProperty.call(message, "stepType"))
+                                    writer.uint32(64).int32(message.stepType);
                                 return writer;
                             };
 
@@ -1339,7 +1179,10 @@ $root.github = (function() {
                                     case 5:
                                         message.stepInfo = reader.bytes();
                                         break;
-                                    case 6:
+                                    case 8:
+                                        message.stepType = reader.int32();
+                                        break;
+                                    case 7:
                                         message.createdTM = reader.int32();
                                         break;
                                     default:
@@ -1374,6 +1217,9 @@ $root.github = (function() {
                                 if (message.stepInfo != null && message.hasOwnProperty("stepInfo"))
                                     if (!(message.stepInfo && typeof message.stepInfo.length === "number" || $util.isString(message.stepInfo)))
                                         return "stepInfo: buffer expected";
+                                if (message.stepType != null && message.hasOwnProperty("stepType"))
+                                    if (!$util.isInteger(message.stepType))
+                                        return "stepType: integer expected";
                                 if (message.createdTM != null && message.hasOwnProperty("createdTM"))
                                     if (!$util.isInteger(message.createdTM))
                                         return "createdTM: integer expected";
