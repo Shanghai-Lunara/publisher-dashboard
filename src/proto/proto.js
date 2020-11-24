@@ -1855,6 +1855,7 @@ $root.github = (function() {
                                 this.uploadFiles = [];
                                 this.writeFiles = [];
                                 this.messages = [];
+                                this.remarks = [];
                                 if (properties)
                                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
@@ -1873,6 +1874,7 @@ $root.github = (function() {
                             Step.prototype.messages = $util.emptyArray;
                             Step.prototype.runnerName = "";
                             Step.prototype.durationInMs = 0;
+                            Step.prototype.remarks = $util.emptyArray;
 
                             Step.create = function create(properties) {
                                 return new Step(properties);
@@ -1910,6 +1912,9 @@ $root.github = (function() {
                                     writer.uint32(90).string(message.runnerName);
                                 if (message.durationInMs != null && Object.hasOwnProperty.call(message, "durationInMs"))
                                     writer.uint32(96).int32(message.durationInMs);
+                                if (message.remarks != null && message.remarks.length)
+                                    for (var i = 0; i < message.remarks.length; ++i)
+                                        writer.uint32(106).string(message.remarks[i]);
                                 return writer;
                             };
 
@@ -1986,6 +1991,11 @@ $root.github = (function() {
                                         break;
                                     case 12:
                                         message.durationInMs = reader.int32();
+                                        break;
+                                    case 13:
+                                        if (!(message.remarks && message.remarks.length))
+                                            message.remarks = [];
+                                        message.remarks.push(reader.string());
                                         break;
                                     default:
                                         reader.skipType(tag & 7);
@@ -2065,6 +2075,13 @@ $root.github = (function() {
                                 if (message.durationInMs != null && message.hasOwnProperty("durationInMs"))
                                     if (!$util.isInteger(message.durationInMs))
                                         return "durationInMs: integer expected";
+                                if (message.remarks != null && message.hasOwnProperty("remarks")) {
+                                    if (!Array.isArray(message.remarks))
+                                        return "remarks: array expected";
+                                    for (var i = 0; i < message.remarks.length; ++i)
+                                        if (!$util.isString(message.remarks[i]))
+                                            return "remarks: string[] expected";
+                                }
                                 return null;
                             };
 
