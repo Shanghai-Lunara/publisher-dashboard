@@ -2019,6 +2019,7 @@ $root.github = (function() {
                             Step.prototype.name = "";
                             Step.prototype.status = "";
                             Step.prototype.policy = "";
+                            Step.prototype.available = "";
                             Step.prototype.envs = $util.emptyObject;
                             Step.prototype.output = $util.emptyArray;
                             Step.prototype.uploadFiles = $util.emptyArray;
@@ -2042,25 +2043,27 @@ $root.github = (function() {
                                     writer.uint32(26).string(message.status);
                                 if (message.policy != null && Object.hasOwnProperty.call(message, "policy"))
                                     writer.uint32(34).string(message.policy);
+                                if (message.available != null && Object.hasOwnProperty.call(message, "available"))
+                                    writer.uint32(42).string(message.available);
                                 if (message.envs != null && Object.hasOwnProperty.call(message, "envs"))
                                     for (var keys = Object.keys(message.envs), i = 0; i < keys.length; ++i)
-                                        writer.uint32(42).fork().uint32(10).string(keys[i]).uint32(18).string(message.envs[keys[i]]).ldelim();
+                                        writer.uint32(50).fork().uint32(10).string(keys[i]).uint32(18).string(message.envs[keys[i]]).ldelim();
                                 if (message.output != null && message.output.length)
                                     for (var i = 0; i < message.output.length; ++i)
-                                        writer.uint32(50).string(message.output[i]);
+                                        writer.uint32(58).string(message.output[i]);
                                 if (message.uploadFiles != null && message.uploadFiles.length)
                                     for (var i = 0; i < message.uploadFiles.length; ++i)
-                                        $root.github.com.nevercase.publisher.pkg.types.UploadFile.encode(message.uploadFiles[i], writer.uint32(58).fork()).ldelim();
+                                        $root.github.com.nevercase.publisher.pkg.types.UploadFile.encode(message.uploadFiles[i], writer.uint32(66).fork()).ldelim();
                                 if (message.writeFiles != null && message.writeFiles.length)
                                     for (var i = 0; i < message.writeFiles.length; ++i)
-                                        $root.github.com.nevercase.publisher.pkg.types.WriteFile.encode(message.writeFiles[i], writer.uint32(66).fork()).ldelim();
+                                        $root.github.com.nevercase.publisher.pkg.types.WriteFile.encode(message.writeFiles[i], writer.uint32(74).fork()).ldelim();
                                 if (message.messages != null && message.messages.length)
                                     for (var i = 0; i < message.messages.length; ++i)
-                                        writer.uint32(74).string(message.messages[i]);
+                                        writer.uint32(82).string(message.messages[i]);
                                 if (message.runnerName != null && Object.hasOwnProperty.call(message, "runnerName"))
-                                    writer.uint32(82).string(message.runnerName);
+                                    writer.uint32(90).string(message.runnerName);
                                 if (message.durationInMs != null && Object.hasOwnProperty.call(message, "durationInMs"))
-                                    writer.uint32(88).int32(message.durationInMs);
+                                    writer.uint32(96).int32(message.durationInMs);
                                 return writer;
                             };
 
@@ -2088,6 +2091,9 @@ $root.github = (function() {
                                         message.policy = reader.string();
                                         break;
                                     case 5:
+                                        message.available = reader.string();
+                                        break;
+                                    case 6:
                                         if (message.envs === $util.emptyObject)
                                             message.envs = {};
                                         var end2 = reader.uint32() + reader.pos;
@@ -2109,30 +2115,30 @@ $root.github = (function() {
                                         }
                                         message.envs[key] = value;
                                         break;
-                                    case 6:
+                                    case 7:
                                         if (!(message.output && message.output.length))
                                             message.output = [];
                                         message.output.push(reader.string());
                                         break;
-                                    case 7:
+                                    case 8:
                                         if (!(message.uploadFiles && message.uploadFiles.length))
                                             message.uploadFiles = [];
                                         message.uploadFiles.push($root.github.com.nevercase.publisher.pkg.types.UploadFile.decode(reader, reader.uint32()));
                                         break;
-                                    case 8:
+                                    case 9:
                                         if (!(message.writeFiles && message.writeFiles.length))
                                             message.writeFiles = [];
                                         message.writeFiles.push($root.github.com.nevercase.publisher.pkg.types.WriteFile.decode(reader, reader.uint32()));
                                         break;
-                                    case 9:
+                                    case 10:
                                         if (!(message.messages && message.messages.length))
                                             message.messages = [];
                                         message.messages.push(reader.string());
                                         break;
-                                    case 10:
+                                    case 11:
                                         message.runnerName = reader.string();
                                         break;
-                                    case 11:
+                                    case 12:
                                         message.durationInMs = reader.int32();
                                         break;
                                     default:
@@ -2164,6 +2170,9 @@ $root.github = (function() {
                                 if (message.policy != null && message.hasOwnProperty("policy"))
                                     if (!$util.isString(message.policy))
                                         return "policy: string expected";
+                                if (message.available != null && message.hasOwnProperty("available"))
+                                    if (!$util.isString(message.available))
+                                        return "available: string expected";
                                 if (message.envs != null && message.hasOwnProperty("envs")) {
                                     if (!$util.isObject(message.envs))
                                         return "envs: object expected";
