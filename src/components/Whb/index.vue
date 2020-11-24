@@ -54,6 +54,11 @@
                 {{group}}
             </a-select-option>
         </a-select>
+
+        <a-button type="primary" @click="searchLog" style="margin-left: 20px;">
+          查询日志
+        </a-button>
+
       </a-layout-header>
       <a-layout-content
         :style="{ margin: '24px 16px', overflow: 'initial', }"
@@ -65,7 +70,7 @@
 
             <!-- <div> -->
                 <a-tabs default-active-key="1" @change="callback" v-if="flag">
-                    <a-tab-pane key="1" tab="stepInfo">
+                    <a-tab-pane key="1" tab="StepInfo">
 
                         <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
                             <a-form-model-item label="name">
@@ -80,6 +85,14 @@
                                         manual
                                     </a-select-option>
                                 </a-select>
+                            </a-form-model-item>
+
+                            <a-form-model-item label="message">
+                                <a-textarea v-model="tmp_value.message" auto-size disabled />
+                            </a-form-model-item>
+
+                            <a-form-model-item label="uploadFiles">
+                                <a-textarea v-model="tmp_value.uploadFiles" auto-size disabled />
                             </a-form-model-item>
 
                             <a-form-model-item label="envs">
@@ -107,8 +120,29 @@
                     </a-tab-pane>
 
                 </a-tabs>
-            <!-- </div> -->
-            
+
+            <!-- logs  -->
+                <a-tabs v-if="logFlag">
+                    <a-tab-pane :tab="logKey" v-for="(logOne, logKey) in logArr" :key="logKey" >
+                      <a-timeline style="margin-left: 15px; margin-top: 5px;">
+                        <a-timeline-item v-for="(logIndex, index) in logOne" :key="index">
+                          <p>{{ logIndex.time }} </p>
+
+                          <a-collapse v-model="activeKey">
+                            <a-collapse-panel key="1" :header="logIndex.name">
+                              <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled />
+                              <a-tag color="pink" slot="extra">
+                                {{ logIndex.status }}
+                              </a-tag>
+                            </a-collapse-panel>
+                          </a-collapse>
+
+                        </a-timeline-item>
+                      </a-timeline>
+                    </a-tab-pane>
+
+                </a-tabs>
+
         </div>
 
       </a-layout-content>
@@ -137,7 +171,7 @@ export default {
         // content
         flag: false,
         labelCol: { span: 4 },
-        wrapperCol: { span: 14 },
+        wrapperCol: { span: 18 },
         form: '',
 
         // logstream
@@ -147,7 +181,18 @@ export default {
         log: '',
 
         // 自动切换
-        selectKey: []
+        selectKey: [],
+
+        // searchlog
+        logFlag: false,
+        logArr: {},
+
+        // message || uploadfiles
+        tmp_value: {
+          message: '',
+          uploadFiles: ''
+        }
+
 
     };
   },
@@ -161,6 +206,40 @@ export default {
     //   }
   },
   methods: {
+    searchLog() {
+      if (this.cur_namespace === '') {
+         this.$message.info('当前namespace为空')
+         return
+      }
+
+      if (this.cur_group === '') {
+        this.$message.info('当前group为空')
+        return
+      }
+
+      var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+
+      let data = {
+          namespace: this.cur_namespace,
+          groupName: this.cur_group,
+          runnerName: '',
+          page: 0,
+          length: 10
+      }
+
+      let record = proto.ListRecordsRequest.create(data)
+      let sendData = proto.ListRecordsRequest.encode(record).finish()
+
+      let new_data = {
+          body: 'Dashboard',
+          serviceApi: 'ListRecordsRequest'
+      }
+
+      this.flag = false
+      this.logFlag = true
+
+      this.initQuest(new_data, proto, sendData)
+    },
     callback(key) {
 
         if (key === '2') {
@@ -178,7 +257,6 @@ export default {
         }
     },
     changeName(value) {
-        // console.log(value.keyPath)
 
         this.selectKey = value.keyPath
         
@@ -196,6 +274,30 @@ export default {
         this.cur_stepname = arr[1]
 
         this.flag = true
+        this.logFlag = false
+
+        // message || uploadfiles
+
+        this.tmp_value = {
+          message: '',
+          uploadFiles: ''
+        }
+
+        if (info.messages.length !== 0) {
+
+          this.tmp_value.message = info.messages.join('\n')
+
+        } 
+
+        if (info.uploadFiles.length !== 0) {
+          let newArr = []
+          for (let i = 0; i < info.uploadFiles.length; i++) {
+            newArr.push(JSON.stringify(info.uploadFiles[i]))
+            
+          }
+
+          this.tmp_value.uploadFiles = newArr.join('\n')
+        }
 
         this.form = info
 
@@ -310,8 +412,6 @@ export default {
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
 
-        //   console.log(_self.runner_list)
-
           break
         case 'UpdateStep':
             console.log('update')
@@ -368,12 +468,43 @@ export default {
             _self.logStream[logStr].push(_self.log)
 
             break
+        case 'ListRecordsResponse':
+          console.log('recorder')
+          let record = proto.ListRecordsResponse.decode(message.data)
+
+          // console.log(record.records)
+
+          _self.logArr = {}
+
+          // 拼接log数据
+
+          for (let one in record.records) {
+            // console.log(record.records[one])
+            let cur_arr = []
+            let stepInfo = proto.Step.decode(record.records[one]['stepInfo'])
+
+            if (!_self.logArr.hasOwnProperty(record.records[one]['runnerName'])) {
+              _self.logArr[record.records[one]['runnerName']] = []
+            } 
+
+            cur_arr['name'] = stepInfo['name']
+            cur_arr['envs'] = stepInfo['envs']
+            cur_arr['status'] = stepInfo['status']
+            cur_arr['time'] = _self.getTime(record.records[one]['createdTM'])
+
+            _self.logArr[record.records[one]['runnerName']].push(cur_arr)
+          }
+
+          break
         case 'Ping':
             break
         default:
           break
         
       }
+    },
+    getTime(time) {
+      return new Date(parseInt(time) * 1000).toLocaleString()
     },
     spaceChange(value) {
       this.cur_namespace = value
