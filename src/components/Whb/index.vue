@@ -1,12 +1,12 @@
 <template>
   <a-layout id="components-layout-demo-custom-trigger">
-    <a-layout-sider style="width: 300px; min-width: 300px; max-width: 300px; flex: 0 0 300px">
-      <div class="logo" style="text-align: center;color: white;line-height: 32px;">
+    <a-layout-sider style="width: 350px; min-width: 300px; max-width: 350px; flex: 0 0 auto; background: white;">
+      <div class="logo" style="text-align: center;line-height: 64px; background: black; margin: 0; color: white;">
           publisher-dashboard
       </div>
 
         <a-menu
-            theme="dark"
+            theme="light"
             mode="inline"
             :style="{ borderRight: 0 }"
             @click="changeName"
@@ -16,8 +16,18 @@
                 <span slot="title"><a-icon type="laptop" />{{runinfo.name}}</span>
 
                 <a-menu-item v-for="(value, index) in runinfo.steps" :key="runinfo.name + ',' + value.name + ',' + index">
-                    <span v-if="value.available == 'disable'" style="color: red;">{{value.name}}</span>
-                    <span v-else>{{value.name}}</span>
+                    <!-- <span v-if="value.available == 'disable'" style="color: red;">{{value.name}}</span>
+                    <span v-else>{{value.name}}</span> -->
+
+                    <span>{{value.name}}</span>
+
+                    <a-tag color="red" v-if="value.available == 'disable'" style="margin-left: 5px;">
+                        {{value.available}}
+                    </a-tag>
+                    <a-tag color="green" v-else style="margin-left: 5px;">
+                        {{value.available}}
+                    </a-tag>
+                    
                     <a-tag color="purple" v-if="value.status == 'Pending'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
@@ -37,7 +47,7 @@
                     <a-tag color="orange" v-else-if="value.status == 'Unknown'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
-                    
+
                 </a-menu-item>
             </a-sub-menu>
         </a-menu>
@@ -112,7 +122,12 @@
                             </a-form-model-item>
 
                             <a-form-model-item label="envs">
-                                <a-input :addon-before="id" v-model="form.envs[id]" v-for="(info, id) in form.envs" :key="id"/>
+                                <div v-for="(info, id) in form.envs" :key="id">
+                                  <a-input :addon-before="id" v-model="form.envs[id]" v-if="id !== 'FinalFullVersion'" />
+                                  <a-textarea v-else v-model="form.envs[id]" auto-size disabled />
+                                </div>
+
+                                <!-- <a-input :addon-before="id" v-model="form.envs[id]" v-for="(info, id) in form.envs" :key="id" /> -->
                             </a-form-model-item>
 
                             <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
@@ -594,7 +609,7 @@ export default {
 }
 
 #components-layout-demo-custom-trigger .logo {
-  height: 32px;
+  height: 64px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
 }
