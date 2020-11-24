@@ -16,24 +16,25 @@
                 <span slot="title"><a-icon type="laptop" />{{runinfo.name}}</span>
 
                 <a-menu-item v-for="(value, index) in runinfo.steps" :key="runinfo.name + ',' + value.name + ',' + index">
-                    {{value.name}}
-                    <a-tag color="purple" v-if="value.status == 'Pending'">
+                    <span v-if="value.available == 'disable'" style="color: red;">{{value.name}}</span>
+                    <span v-else>{{value.name}}</span>
+                    <a-tag color="purple" v-if="value.status == 'Pending'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
 
-                    <a-tag color="green" v-else-if="value.status == 'Running'">
+                    <a-tag color="green" v-else-if="value.status == 'Running'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
 
-                    <a-tag color="blue" v-else-if="value.status == 'Succeeded'">
+                    <a-tag color="blue" v-else-if="value.status == 'Succeeded'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
 
-                    <a-tag color="red" v-else-if="value.status == 'Failed'">
+                    <a-tag color="red" v-else-if="value.status == 'Failed'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
 
-                    <a-tag color="orange" v-else-if="value.status == 'Unknown'">
+                    <a-tag color="orange" v-else-if="value.status == 'Unknown'" style="margin-left: 5px;">
                         {{value.status}}
                     </a-tag>
                     
@@ -87,6 +88,21 @@
                                 </a-select>
                             </a-form-model-item>
 
+                            <a-form-model-item label="available">
+                                <a-select v-model="form.available">
+                                    <a-select-option value="enable">
+                                        enable
+                                    </a-select-option>
+                                    <a-select-option value="disable">
+                                        disable
+                                    </a-select-option>
+                                </a-select>
+                            </a-form-model-item>
+
+                            <a-form-model-item label="durationInMs">
+                                <a-input addon-after="ms" v-model="form.durationInMs" disabled />
+                            </a-form-model-item>
+
                             <a-form-model-item label="message">
                                 <a-textarea v-model="tmp_value.message" auto-size disabled />
                             </a-form-model-item>
@@ -116,6 +132,7 @@
                             v-model="value"
                             :auto-size="{ minRows: 3, maxRows: 30 }"
                             style="color: white;background: #000c17;"
+                            id="textareaTmp"
                         />
                     </a-tab-pane>
 
@@ -150,6 +167,10 @@
   </a-layout>
 </template>
 <script>
+
+import $ from 'jquery'
+
+
 export default {
   data() {
     return {
@@ -243,6 +264,7 @@ export default {
     callback(key) {
 
         if (key === '2') {
+
             let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
 
             let str = ''
@@ -254,6 +276,10 @@ export default {
 
                 this.value = str
             }
+
+            // jquery 文本框滑块移动最下方
+            let top = $("#textareaTmp")[0].scrollHeight;
+            $("#textareaTmp").scrollTop(top)
         }
     },
     changeName(value) {
@@ -300,6 +326,8 @@ export default {
         }
 
         this.form = info
+
+        console.log(info)
 
         // log
         let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
