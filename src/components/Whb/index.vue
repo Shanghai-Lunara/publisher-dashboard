@@ -55,12 +55,12 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
-        <a-select placeholder="namespace" style="width: 200px;margin-left: 20px;" @change="spaceChange">
+        <a-select id="namespace" placeholder="namespace" style="width: 200px;margin-left: 20px;" @change="spaceChange">
             <a-select-option v-for="namespace in namespaces" :key="namespace" :value="namespace">
                 {{namespace}}
             </a-select-option>
         </a-select>
-        <a-select placeholder="group" style="width: 200px;margin-left: 20px;" @change="onchange">
+        <a-select id="group" placeholder="group" style="width: 200px;margin-left: 20px;" @change="onchange" v-model="cur_group">
             <a-select-option v-for="group in groups" :key="group" :value="group">
                 {{group}}
             </a-select-option>
@@ -107,6 +107,21 @@
                                         disable
                                     </a-select-option>
                                 </a-select>
+                            </a-form-model-item>
+
+                            <a-form-model-item label="sharingSetting">
+                                <a-select :value="form.sharingSetting">
+                                    <a-select-option value="true">
+                                        true
+                                    </a-select-option>
+                                    <a-select-option value="false">
+                                        false
+                                    </a-select-option>
+                                </a-select>
+                            </a-form-model-item>
+
+                            <a-form-model-item label="sharingData">
+                                <a-textarea v-model="tmp_value.sharingData" auto-size disabled />
                             </a-form-model-item>
 
                             <a-form-model-item label="durationInMs">
@@ -231,7 +246,8 @@ export default {
         tmp_value: {
           message: '',
           uploadFiles: '',
-          remarks: ''
+          remarks: '',
+          // sharingData: ''
         },
 
         current: 1,
@@ -307,7 +323,7 @@ export default {
     changeName(value) {
 
         this.selectKey = value.keyPath
-        
+
         let index = value.keyPath[1]
         let arr = value.keyPath[0].split(',')
 
@@ -333,9 +349,7 @@ export default {
         }
 
         if (info.messages.length !== 0) {
-
           this.tmp_value.message = info.messages.join('\n')
-
         } 
 
         if (info.uploadFiles.length !== 0) {
@@ -350,6 +364,22 @@ export default {
 
         if (info.remarks.length !== 0) {
           this.tmp_value.remarks = info.remarks.join('\n')
+        }
+
+        if (info.sharingData === '') {
+          let sharingList = []
+
+          for (let shareKey in info.sharingData) {
+            let shareStr = shareKey + ':' + info.sharingData[shareKey]
+            sharingList.push(shareStr)
+          }
+          this.tmp_value.sharingData = sharingList.join('\n') 
+        }
+
+        if (info.sharingSetting) {
+          info.sharingSetting = 'true'
+        } else {
+          info.sharingSetting = 'false'
         }
 
         this.form = info
@@ -375,6 +405,12 @@ export default {
     clickBtn(type) {
 
         var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+
+        if (this.form.sharingSetting === 'true') {
+          this.form.sharingSetting = true
+        } else {
+          this.form.sharingSetting = false
+        }
 
         let info = {
             namespace: this.cur_namespace,
@@ -454,15 +490,13 @@ export default {
       switch (message.type.serviceApi) {
         case 'ListNamespace':
           let namespaces = proto.ListNamespaceResponse.decode(message.data)
-            _self.namespaces = namespaces.items
+          _self.namespaces = namespaces.items
           break
         case 'ListGroupName':
           let group = proto.ListGroupNameResponse.decode(message.data)
           _self.groups = group.items
+
           break
-        // case 'ListTask':
-        //   let task = proto.ListTaskResponse.decode(message.data)
-        //   break
         case 'ListRunner':
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
@@ -473,12 +507,10 @@ export default {
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
 
-            // console.log(upStep)
-
             let cur_id = ''
 
             for (let id in _self.runner_list) {
-                if (_self.runner_list[id]['namespace'] === upStep['namespace'] && _self.runner_list[id]['groupName'] === upStep['groupName']) {
+                if (_self.runner_list[id]['namespace'] === upStep['namespace'] && _self.runner_list[id]['groupName'] === upStep['groupName'] && _self.runner_list[id]['name'] === upStep['runnerName']) {
                     cur_id = id
                 }
             }
@@ -564,7 +596,9 @@ export default {
     spaceChange(value) {
       this.cur_namespace = value
       this.cur_group = ''
-
+      this.groups = ''
+      this.runner_list = ''
+ 
       var proto = this.$proto.github.com.nevercase.publisher.pkg.types
       let data = {
           body: 'Dashboard',
@@ -577,6 +611,7 @@ export default {
         
       let init = proto.ListGroupNameRequest.create(other_data)
       this.initQuest(data, proto, proto.ListGroupNameRequest.encode(init).finish())
+
     },
     onchange(value) {
       this.cur_group = value
