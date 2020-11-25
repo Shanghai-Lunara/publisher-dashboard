@@ -110,7 +110,7 @@
                             </a-form-model-item>
 
                             <a-form-model-item label="sharingSetting">
-                                <a-select :value="form.sharingSetting">
+                                <a-select :value="form.sharingSetting ? 'true' : 'false'">
                                     <a-select-option value="true">
                                         true
                                     </a-select-option>
@@ -247,7 +247,7 @@ export default {
           message: '',
           uploadFiles: '',
           remarks: '',
-          // sharingData: ''
+          sharingData: ''
         },
 
         current: 1,
@@ -345,7 +345,8 @@ export default {
         this.tmp_value = {
           message: '',
           uploadFiles: '',
-          remarks: ''
+          remarks: '',
+          sharingData: ''
         }
 
         if (info.messages.length !== 0) {
@@ -376,12 +377,6 @@ export default {
           this.tmp_value.sharingData = sharingList.join('\n') 
         }
 
-        if (info.sharingSetting) {
-          info.sharingSetting = 'true'
-        } else {
-          info.sharingSetting = 'false'
-        }
-
         this.form = info
 
         console.log(info)
@@ -405,12 +400,6 @@ export default {
     clickBtn(type) {
 
         var proto = this.$proto.github.com.nevercase.publisher.pkg.types
-
-        if (this.form.sharingSetting === 'true') {
-          this.form.sharingSetting = true
-        } else {
-          this.form.sharingSetting = false
-        }
 
         let info = {
             namespace: this.cur_namespace,
@@ -500,6 +489,8 @@ export default {
         case 'ListRunner':
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
+
+          console.log(_self.runner_list)
 
           break
         case 'UpdateStep':
