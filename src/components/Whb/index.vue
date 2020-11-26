@@ -70,6 +70,10 @@
           查询日志
         </a-button>
 
+        <a-button type="primary" @click="searchHisLog" style="margin-left: 20px;">
+          查询历史版本
+        </a-button>
+
       </a-layout-header>
       <a-layout-content
         :style="{ margin: '24px 16px', overflow: 'initial', }"
@@ -286,6 +290,9 @@ export default {
         // 分页 总数
         numData: 0,
 
+        // 历史版本 | 全部
+        hisFlag: 0,
+
 
     };
   },
@@ -299,14 +306,58 @@ export default {
     //   }
   },
   methods: {
+    searchHisLog() {
+      this.current = 1
+      if (this.cur_namespace === '') {
+         this.$message.info('当前namespace为空')
+         return
+      }
+
+      if (this.cur_group === '') {
+        this.$message.info('当前group为空')
+        return
+      }
+
+      var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+
+      let data = {
+          namespace: this.cur_namespace,
+          groupName: this.cur_group,
+          runnerName: '',
+          page: 0,
+          length: 10,
+          isVersion: 1
+      }
+
+      let record = proto.ListRecordsRequest.create(data)
+      let sendData = proto.ListRecordsRequest.encode(record).finish()
+
+      let new_data = {
+          body: 'Dashboard',
+          serviceApi: 'ListVersionRequest'
+      }
+
+      this.flag = false
+      this.logFlag = true
+
+      this.initQuest(new_data, proto, sendData)
+    },
     changePage(page, pageSize) {
-      console.log(page)
-      console.log(pageSize)
+
+      let isVersion = 0
+      let serviceApi = ''
+
+      if (this.hisFlag) {
+        isVersion = 1
+        serviceApi = 'ListVersionRequest'
+      } else {
+        serviceApi = 'ListRecordsRequest'
+      }
 
       page = page - 1
 
       if (page !== 0) {
-        page = page * 10 + 1
+        page = page * 10
       }
 
       var proto = this.$proto.github.com.nevercase.publisher.pkg.types
@@ -316,7 +367,8 @@ export default {
           groupName: this.cur_group,
           runnerName: '',
           page: page,
-          length: pageSize
+          length: pageSize,
+          isVersion: isVersion
       }
 
       let record = proto.ListRecordsRequest.create(data)
@@ -324,7 +376,7 @@ export default {
 
       let new_data = {
           body: 'Dashboard',
-          serviceApi: 'ListRecordsRequest'
+          serviceApi: serviceApi
       }
 
       this.flag = false
@@ -334,6 +386,7 @@ export default {
 
     },
     searchLog() {
+      this.current = 1
       if (this.cur_namespace === '') {
          this.$message.info('当前namespace为空')
          return
@@ -447,8 +500,6 @@ export default {
 
         this.form = info
 
-        console.log(info)
-
         // log
         let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
 
@@ -560,7 +611,7 @@ export default {
 
           break
         case 'UpdateStep':
-            console.log('update')
+            // console.log('update')
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
 
@@ -592,12 +643,12 @@ export default {
 
             break
         case 'Runstep':
-            console.log('run')
-            console.log(message)
+            // console.log('run')
+            // console.log(message)
             break
         case 'LogStream':
             // namespace: "helix-saga", groupName: "cn-leiting", runnerName: "HelixSagaServer", stepName: "Zip codes", output: ""
-            console.log('log')
+            // console.log('log')
             let logs = proto.LogStreamRequest.decode(message.data)
 
             let logStr = logs['namespace'] + ',' + logs['groupName'] + ',' + logs['runnerName'] + ',' +  logs['stepName']
@@ -613,10 +664,8 @@ export default {
 
             break
         case 'ListRecordsResponse':
-          console.log('recorder')
+          // console.log('recorder')
           let record = proto.ListRecordsResponse.decode(message.data)
-
-          console.log(record)
 
           _self.numData = record.recordNumber
 
@@ -646,7 +695,34 @@ export default {
             _self.logArr.push(cur_arr)
           }
 
-          console.log(_self.logArr)
+          _self.hisFlag = 0
+
+          break
+        
+        case 'ListVersionResponse':
+          let recordHis = proto.ListRecordsResponse.decode(message.data)
+
+          _self.numData = recordHis.recordNumber
+
+          _self.logArr = []
+
+          // 拼接log数据
+
+          for (let one in recordHis.records) {
+            let cur_arr = []
+            let stepInfo = proto.Step.decode(recordHis.records[one]['stepInfo'])
+
+            cur_arr['name'] = stepInfo['name']
+            cur_arr['envs'] = stepInfo['envs']
+            cur_arr['status'] = stepInfo['status']
+            cur_arr['time'] = _self.getTime(recordHis.records[one]['createdTM'])
+            cur_arr['durationInMs'] = stepInfo['durationInMs']
+            cur_arr['runnerName'] = recordHis.records[one]['runnerName']
+
+            _self.logArr.push(cur_arr)
+          }
+
+          _self.hisFlag = 1
 
           break
         case 'Ping':
