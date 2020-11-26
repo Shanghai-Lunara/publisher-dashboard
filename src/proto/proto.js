@@ -179,7 +179,6 @@ $root.github = (function() {
                         types.Group = (function() {
 
                             function Group(properties) {
-                                this.tasks = [];
                                 this.runners = [];
                                 if (properties)
                                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
@@ -187,7 +186,6 @@ $root.github = (function() {
                                             this[keys[i]] = properties[keys[i]];
                             }
 
-                            Group.prototype.tasks = $util.emptyArray;
                             Group.prototype.runners = $util.emptyArray;
 
                             Group.create = function create(properties) {
@@ -197,9 +195,6 @@ $root.github = (function() {
                             Group.encode = function encode(message, writer) {
                                 if (!writer)
                                     writer = $Writer.create();
-                                if (message.tasks != null && message.tasks.length)
-                                    for (var i = 0; i < message.tasks.length; ++i)
-                                        $root.github.com.nevercase.publisher.pkg.types.Task.encode(message.tasks[i], writer.uint32(10).fork()).ldelim();
                                 if (message.runners != null && message.runners.length)
                                     for (var i = 0; i < message.runners.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.encode(message.runners[i], writer.uint32(18).fork()).ldelim();
@@ -217,11 +212,6 @@ $root.github = (function() {
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
                                     switch (tag >>> 3) {
-                                    case 1:
-                                        if (!(message.tasks && message.tasks.length))
-                                            message.tasks = [];
-                                        message.tasks.push($root.github.com.nevercase.publisher.pkg.types.Task.decode(reader, reader.uint32()));
-                                        break;
                                     case 2:
                                         if (!(message.runners && message.runners.length))
                                             message.runners = [];
@@ -244,15 +234,6 @@ $root.github = (function() {
                             Group.verify = function verify(message) {
                                 if (typeof message !== "object" || message === null)
                                     return "object expected";
-                                if (message.tasks != null && message.hasOwnProperty("tasks")) {
-                                    if (!Array.isArray(message.tasks))
-                                        return "tasks: array expected";
-                                    for (var i = 0; i < message.tasks.length; ++i) {
-                                        var error = $root.github.com.nevercase.publisher.pkg.types.Task.verify(message.tasks[i]);
-                                        if (error)
-                                            return "tasks." + error;
-                                    }
-                                }
                                 if (message.runners != null && message.hasOwnProperty("runners")) {
                                     if (!Array.isArray(message.runners))
                                         return "runners: array expected";
@@ -540,6 +521,7 @@ $root.github = (function() {
                             ListRecordsRequest.prototype.runnerName = "";
                             ListRecordsRequest.prototype.page = 0;
                             ListRecordsRequest.prototype.length = 0;
+                            ListRecordsRequest.prototype.isVersion = 0;
 
                             ListRecordsRequest.create = function create(properties) {
                                 return new ListRecordsRequest(properties);
@@ -558,6 +540,8 @@ $root.github = (function() {
                                     writer.uint32(32).int32(message.page);
                                 if (message.length != null && Object.hasOwnProperty.call(message, "length"))
                                     writer.uint32(40).int32(message.length);
+                                if (message.isVersion != null && Object.hasOwnProperty.call(message, "isVersion"))
+                                    writer.uint32(48).int32(message.isVersion);
                                 return writer;
                             };
 
@@ -586,6 +570,9 @@ $root.github = (function() {
                                         break;
                                     case 5:
                                         message.length = reader.int32();
+                                        break;
+                                    case 6:
+                                        message.isVersion = reader.int32();
                                         break;
                                     default:
                                         reader.skipType(tag & 7);
@@ -619,6 +606,9 @@ $root.github = (function() {
                                 if (message.length != null && message.hasOwnProperty("length"))
                                     if (!$util.isInteger(message.length))
                                         return "length: integer expected";
+                                if (message.isVersion != null && message.hasOwnProperty("isVersion"))
+                                    if (!$util.isInteger(message.isVersion))
+                                        return "isVersion: integer expected";
                                 return null;
                             };
 
@@ -2139,108 +2129,6 @@ $root.github = (function() {
                             };
 
                             return Step;
-                        })();
-
-                        types.Task = (function() {
-
-                            function Task(properties) {
-                                this.runners = {};
-                                if (properties)
-                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                        if (properties[keys[i]] != null)
-                                            this[keys[i]] = properties[keys[i]];
-                            }
-
-                            Task.prototype.id = 0;
-                            Task.prototype.runners = $util.emptyObject;
-
-                            Task.create = function create(properties) {
-                                return new Task(properties);
-                            };
-
-                            Task.encode = function encode(message, writer) {
-                                if (!writer)
-                                    writer = $Writer.create();
-                                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
-                                    writer.uint32(8).int32(message.id);
-                                if (message.runners != null && Object.hasOwnProperty.call(message, "runners"))
-                                    for (var keys = Object.keys(message.runners), i = 0; i < keys.length; ++i) {
-                                        writer.uint32(18).fork().uint32(10).string(keys[i]);
-                                        $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.encode(message.runners[keys[i]], writer.uint32(18).fork()).ldelim().ldelim();
-                                    }
-                                return writer;
-                            };
-
-                            Task.encodeDelimited = function encodeDelimited(message, writer) {
-                                return this.encode(message, writer).ldelim();
-                            };
-
-                            Task.decode = function decode(reader, length) {
-                                if (!(reader instanceof $Reader))
-                                    reader = $Reader.create(reader);
-                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.github.com.nevercase.publisher.pkg.types.Task(), key, value;
-                                while (reader.pos < end) {
-                                    var tag = reader.uint32();
-                                    switch (tag >>> 3) {
-                                    case 1:
-                                        message.id = reader.int32();
-                                        break;
-                                    case 2:
-                                        if (message.runners === $util.emptyObject)
-                                            message.runners = {};
-                                        var end2 = reader.uint32() + reader.pos;
-                                        key = "";
-                                        value = null;
-                                        while (reader.pos < end2) {
-                                            var tag2 = reader.uint32();
-                                            switch (tag2 >>> 3) {
-                                            case 1:
-                                                key = reader.string();
-                                                break;
-                                            case 2:
-                                                value = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.decode(reader, reader.uint32());
-                                                break;
-                                            default:
-                                                reader.skipType(tag2 & 7);
-                                                break;
-                                            }
-                                        }
-                                        message.runners[key] = value;
-                                        break;
-                                    default:
-                                        reader.skipType(tag & 7);
-                                        break;
-                                    }
-                                }
-                                return message;
-                            };
-
-                            Task.decodeDelimited = function decodeDelimited(reader) {
-                                if (!(reader instanceof $Reader))
-                                    reader = new $Reader(reader);
-                                return this.decode(reader, reader.uint32());
-                            };
-
-                            Task.verify = function verify(message) {
-                                if (typeof message !== "object" || message === null)
-                                    return "object expected";
-                                if (message.id != null && message.hasOwnProperty("id"))
-                                    if (!$util.isInteger(message.id))
-                                        return "id: integer expected";
-                                if (message.runners != null && message.hasOwnProperty("runners")) {
-                                    if (!$util.isObject(message.runners))
-                                        return "runners: object expected";
-                                    var key = Object.keys(message.runners);
-                                    for (var i = 0; i < key.length; ++i) {
-                                        var error = $root.github.com.nevercase.publisher.pkg.types.RunnerInfo.verify(message.runners[key[i]]);
-                                        if (error)
-                                            return "runners." + error;
-                                    }
-                                }
-                                return null;
-                            };
-
-                            return Task;
                         })();
 
                         types.Type = (function() {
