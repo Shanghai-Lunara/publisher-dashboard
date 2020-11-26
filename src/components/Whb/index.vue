@@ -167,8 +167,8 @@
 
                 </a-tabs>
 
-            <!-- logs  -->
-                <a-tabs v-if="logFlag">
+            <!-- logs 标签隐藏  -->
+                <!-- <a-tabs v-if="logFlag">
                     <a-tab-pane :tab="logKey" v-for="(logOne, logKey) in logArr" :key="logKey" >
                       <a-timeline style="margin-left: 15px; margin-top: 5px;">
                         <a-timeline-item v-for="(logIndex, index) in logOne" :key="index">
@@ -186,14 +186,45 @@
                         </a-timeline-item>
                       </a-timeline>
                       <div>
-                        <a-pagination v-model="current" :total="50" show-less-items />
+                        <a-pagination v-model="current" :total="logArr[logKey].length" show-less-items @change="changePage" style="margin-right: 5px; float: right;padding: 0 2px 8px 2px" />
                       </div>
                     </a-tab-pane>
                     
-                </a-tabs>
+                </a-tabs> -->
+            
+            
+            <div v-if="logFlag" style="padding: 3px">
+              <a-timeline style="margin-left: 15px; margin-top: 5px;">
+                <a-timeline-item v-for="(logIndex, index) in logArr" :key="index">
+                  <p style="margin-top: 5px;">{{ logIndex.time }} 
+                    
+                    <a-tag color="cyan" style="margin-left: 5px;">
+                        {{ logIndex.runnerName }}
+                    </a-tag>
 
+                    <a-tag color="green" style="margin-left: 5px;">
+                        {{ logIndex.durationInMs + 'ms'}}
+                    </a-tag>
+
+                    <a-tag color="blue" style="margin-left: 5px;">
+                        {{ logIndex.status }}
+                    </a-tag>
+                    
+                  </p>
+
+                  <a-collapse>
+                    <a-collapse-panel key="1" :header="logIndex.name">
+                      <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled />
+                    </a-collapse-panel>
+                  </a-collapse>
+
+                </a-timeline-item>
                 
-                
+              </a-timeline>
+
+              <a-pagination v-model="current" :total="numData" show-less-items @change="changePage" style="text-align: right; padding-bottom: 2px;" />
+
+            </div>  
         </div>
 
       </a-layout-content>
@@ -240,7 +271,7 @@ export default {
 
         // searchlog
         logFlag: false,
-        logArr: {},
+        logArr: [],
 
         // message || uploadfiles
         tmp_value: {
@@ -251,6 +282,9 @@ export default {
         },
 
         current: 1,
+
+        // 分页 总数
+        numData: 0,
 
 
     };
@@ -265,6 +299,40 @@ export default {
     //   }
   },
   methods: {
+    changePage(page, pageSize) {
+      console.log(page)
+      console.log(pageSize)
+
+      page = page - 1
+
+      if (page !== 0) {
+        page = page * 10 + 1
+      }
+
+      var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+
+      let data = {
+          namespace: this.cur_namespace,
+          groupName: this.cur_group,
+          runnerName: '',
+          page: page,
+          length: pageSize
+      }
+
+      let record = proto.ListRecordsRequest.create(data)
+      let sendData = proto.ListRecordsRequest.encode(record).finish()
+
+      let new_data = {
+          body: 'Dashboard',
+          serviceApi: 'ListRecordsRequest'
+      }
+
+      this.flag = false
+      this.logFlag = true
+
+      this.initQuest(new_data, proto, sendData)
+
+    },
     searchLog() {
       if (this.cur_namespace === '') {
          this.$message.info('当前namespace为空')
@@ -490,8 +558,6 @@ export default {
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
 
-          console.log(_self.runner_list)
-
           break
         case 'UpdateStep':
             console.log('update')
@@ -506,7 +572,7 @@ export default {
                 }
             }
 
-            let stepInfo = _self.runner_list[_self.run_id]['steps']
+            let stepInfo = _self.runner_list[cur_id]['steps']
             let id = ''
 
             for (let index in stepInfo) {
@@ -550,9 +616,11 @@ export default {
           console.log('recorder')
           let record = proto.ListRecordsResponse.decode(message.data)
 
-          // console.log(record.records)
+          console.log(record)
 
-          _self.logArr = {}
+          _self.numData = record.recordNumber
+
+          _self.logArr = []
 
           // 拼接log数据
 
@@ -561,17 +629,24 @@ export default {
             let cur_arr = []
             let stepInfo = proto.Step.decode(record.records[one]['stepInfo'])
 
-            if (!_self.logArr.hasOwnProperty(record.records[one]['runnerName'])) {
-              _self.logArr[record.records[one]['runnerName']] = []
-            } 
+            // if (!_self.logArr.hasOwnProperty(record.records[one]['runnerName'])) {
+            //   _self.logArr[record.records[one]['runnerName']] = []
+            // } 
 
             cur_arr['name'] = stepInfo['name']
             cur_arr['envs'] = stepInfo['envs']
             cur_arr['status'] = stepInfo['status']
             cur_arr['time'] = _self.getTime(record.records[one]['createdTM'])
+            cur_arr['durationInMs'] = stepInfo['durationInMs']
+            cur_arr['runnerName'] = record.records[one]['runnerName']
 
-            _self.logArr[record.records[one]['runnerName']].push(cur_arr)
+            // _self.logArr[record.records[one]['runnerName']].push(cur_arr)
+
+            // 全部数据
+            _self.logArr.push(cur_arr)
           }
+
+          console.log(_self.logArr)
 
           break
         case 'Ping':
