@@ -55,12 +55,12 @@
     </a-layout-sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
-        <a-select placeholder="namespace" style="width: 200px;margin-left: 20px;" @change="spaceChange">
+        <a-select id="namespace" placeholder="namespace" style="width: 200px;margin-left: 20px;" @change="spaceChange">
             <a-select-option v-for="namespace in namespaces" :key="namespace" :value="namespace">
                 {{namespace}}
             </a-select-option>
         </a-select>
-        <a-select placeholder="group" style="width: 200px;margin-left: 20px;" @change="onchange">
+        <a-select id="group" placeholder="group" style="width: 200px;margin-left: 20px;" @change="onchange" v-model="cur_group">
             <a-select-option v-for="group in groups" :key="group" :value="group">
                 {{group}}
             </a-select-option>
@@ -109,6 +109,21 @@
                                 </a-select>
                             </a-form-model-item>
 
+                            <a-form-model-item label="sharingSetting">
+                                <a-select :value="form.sharingSetting ? 'true' : 'false'">
+                                    <a-select-option value="true">
+                                        true
+                                    </a-select-option>
+                                    <a-select-option value="false">
+                                        false
+                                    </a-select-option>
+                                </a-select>
+                            </a-form-model-item>
+
+                            <a-form-model-item label="sharingData">
+                                <a-textarea v-model="tmp_value.sharingData" auto-size disabled />
+                            </a-form-model-item>
+
                             <a-form-model-item label="durationInMs">
                                 <a-input addon-after="ms" v-model="form.durationInMs" disabled />
                             </a-form-model-item>
@@ -122,12 +137,11 @@
                             </a-form-model-item>
 
                             <a-form-model-item label="envs">
-                                <div v-for="(info, id) in form.envs" :key="id">
-                                  <a-input :addon-before="id" v-model="form.envs[id]" v-if="id !== 'FinalFullVersion'" />
-                                  <a-textarea v-else v-model="form.envs[id]" auto-size disabled />
-                                </div>
+                                <a-input :addon-before="id" v-model="form.envs[id]" v-for="(info, id) in form.envs" :key="id" />
+                            </a-form-model-item>
 
-                                <!-- <a-input :addon-before="id" v-model="form.envs[id]" v-for="(info, id) in form.envs" :key="id" /> -->
+                            <a-form-model-item label="remarks">
+                                 <a-textarea v-model="tmp_value.remarks" auto-size disabled />
                             </a-form-model-item>
 
                             <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
@@ -160,7 +174,7 @@
                         <a-timeline-item v-for="(logIndex, index) in logOne" :key="index">
                           <p>{{ logIndex.time }} </p>
 
-                          <a-collapse v-model="activeKey">
+                          <a-collapse>
                             <a-collapse-panel key="1" :header="logIndex.name">
                               <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled />
                               <a-tag color="pink" slot="extra">
@@ -171,10 +185,15 @@
 
                         </a-timeline-item>
                       </a-timeline>
+                      <div>
+                        <a-pagination v-model="current" :total="50" show-less-items />
+                      </div>
                     </a-tab-pane>
-
+                    
                 </a-tabs>
 
+                
+                
         </div>
 
       </a-layout-content>
@@ -226,8 +245,12 @@ export default {
         // message || uploadfiles
         tmp_value: {
           message: '',
-          uploadFiles: ''
-        }
+          uploadFiles: '',
+          remarks: '',
+          sharingData: ''
+        },
+
+        current: 1,
 
 
     };
@@ -300,7 +323,7 @@ export default {
     changeName(value) {
 
         this.selectKey = value.keyPath
-        
+
         let index = value.keyPath[1]
         let arr = value.keyPath[0].split(',')
 
@@ -321,13 +344,13 @@ export default {
 
         this.tmp_value = {
           message: '',
-          uploadFiles: ''
+          uploadFiles: '',
+          remarks: '',
+          sharingData: ''
         }
 
         if (info.messages.length !== 0) {
-
           this.tmp_value.message = info.messages.join('\n')
-
         } 
 
         if (info.uploadFiles.length !== 0) {
@@ -338,6 +361,20 @@ export default {
           }
 
           this.tmp_value.uploadFiles = newArr.join('\n')
+        }
+
+        if (info.remarks.length !== 0) {
+          this.tmp_value.remarks = info.remarks.join('\n')
+        }
+
+        if (info.sharingData === '') {
+          let sharingList = []
+
+          for (let shareKey in info.sharingData) {
+            let shareStr = shareKey + ':' + info.sharingData[shareKey]
+            sharingList.push(shareStr)
+          }
+          this.tmp_value.sharingData = sharingList.join('\n') 
         }
 
         this.form = info
@@ -442,18 +479,18 @@ export default {
       switch (message.type.serviceApi) {
         case 'ListNamespace':
           let namespaces = proto.ListNamespaceResponse.decode(message.data)
-            _self.namespaces = namespaces.items
+          _self.namespaces = namespaces.items
           break
         case 'ListGroupName':
           let group = proto.ListGroupNameResponse.decode(message.data)
           _self.groups = group.items
+
           break
-        // case 'ListTask':
-        //   let task = proto.ListTaskResponse.decode(message.data)
-        //   break
         case 'ListRunner':
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
+
+          console.log(_self.runner_list)
 
           break
         case 'UpdateStep':
@@ -461,12 +498,10 @@ export default {
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
 
-            // console.log(upStep)
-
             let cur_id = ''
 
             for (let id in _self.runner_list) {
-                if (_self.runner_list[id]['namespace'] === upStep['namespace'] && _self.runner_list[id]['groupName'] === upStep['groupName']) {
+                if (_self.runner_list[id]['namespace'] === upStep['namespace'] && _self.runner_list[id]['groupName'] === upStep['groupName'] && _self.runner_list[id]['name'] === upStep['runnerName']) {
                     cur_id = id
                 }
             }
@@ -552,7 +587,9 @@ export default {
     spaceChange(value) {
       this.cur_namespace = value
       this.cur_group = ''
-
+      this.groups = ''
+      this.runner_list = ''
+ 
       var proto = this.$proto.github.com.nevercase.publisher.pkg.types
       let data = {
           body: 'Dashboard',
@@ -565,6 +602,7 @@ export default {
         
       let init = proto.ListGroupNameRequest.create(other_data)
       this.initQuest(data, proto, proto.ListGroupNameRequest.encode(init).finish())
+
     },
     onchange(value) {
       this.cur_group = value

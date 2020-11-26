@@ -637,6 +637,7 @@ $root.github = (function() {
 
                             ListRecordsResponse.prototype.namespace = null;
                             ListRecordsResponse.prototype.records = $util.emptyArray;
+                            ListRecordsResponse.prototype.recordNumber = 0;
 
                             ListRecordsResponse.create = function create(properties) {
                                 return new ListRecordsResponse(properties);
@@ -650,6 +651,8 @@ $root.github = (function() {
                                 if (message.records != null && message.records.length)
                                     for (var i = 0; i < message.records.length; ++i)
                                         $root.github.com.nevercase.publisher.pkg.types.Record.encode(message.records[i], writer.uint32(18).fork()).ldelim();
+                                if (message.recordNumber != null && Object.hasOwnProperty.call(message, "recordNumber"))
+                                    writer.uint32(24).int32(message.recordNumber);
                                 return writer;
                             };
 
@@ -671,6 +674,9 @@ $root.github = (function() {
                                         if (!(message.records && message.records.length))
                                             message.records = [];
                                         message.records.push($root.github.com.nevercase.publisher.pkg.types.Record.decode(reader, reader.uint32()));
+                                        break;
+                                    case 3:
+                                        message.recordNumber = reader.int32();
                                         break;
                                     default:
                                         reader.skipType(tag & 7);
@@ -703,6 +709,9 @@ $root.github = (function() {
                                             return "records." + error;
                                     }
                                 }
+                                if (message.recordNumber != null && message.hasOwnProperty("recordNumber"))
+                                    if (!$util.isInteger(message.recordNumber))
+                                        return "recordNumber: integer expected";
                                 return null;
                             };
 
@@ -1856,6 +1865,7 @@ $root.github = (function() {
                                 this.writeFiles = [];
                                 this.messages = [];
                                 this.remarks = [];
+                                this.sharingData = {};
                                 if (properties)
                                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
@@ -1875,6 +1885,8 @@ $root.github = (function() {
                             Step.prototype.runnerName = "";
                             Step.prototype.durationInMs = 0;
                             Step.prototype.remarks = $util.emptyArray;
+                            Step.prototype.sharingData = $util.emptyObject;
+                            Step.prototype.sharingSetting = false;
 
                             Step.create = function create(properties) {
                                 return new Step(properties);
@@ -1915,6 +1927,11 @@ $root.github = (function() {
                                 if (message.remarks != null && message.remarks.length)
                                     for (var i = 0; i < message.remarks.length; ++i)
                                         writer.uint32(106).string(message.remarks[i]);
+                                if (message.sharingData != null && Object.hasOwnProperty.call(message, "sharingData"))
+                                    for (var keys = Object.keys(message.sharingData), i = 0; i < keys.length; ++i)
+                                        writer.uint32(114).fork().uint32(10).string(keys[i]).uint32(18).string(message.sharingData[keys[i]]).ldelim();
+                                if (message.sharingSetting != null && Object.hasOwnProperty.call(message, "sharingSetting"))
+                                    writer.uint32(120).bool(message.sharingSetting);
                                 return writer;
                             };
 
@@ -1996,6 +2013,31 @@ $root.github = (function() {
                                         if (!(message.remarks && message.remarks.length))
                                             message.remarks = [];
                                         message.remarks.push(reader.string());
+                                        break;
+                                    case 14:
+                                        if (message.sharingData === $util.emptyObject)
+                                            message.sharingData = {};
+                                        var end2 = reader.uint32() + reader.pos;
+                                        key = "";
+                                        value = "";
+                                        while (reader.pos < end2) {
+                                            var tag2 = reader.uint32();
+                                            switch (tag2 >>> 3) {
+                                            case 1:
+                                                key = reader.string();
+                                                break;
+                                            case 2:
+                                                value = reader.string();
+                                                break;
+                                            default:
+                                                reader.skipType(tag2 & 7);
+                                                break;
+                                            }
+                                        }
+                                        message.sharingData[key] = value;
+                                        break;
+                                    case 15:
+                                        message.sharingSetting = reader.bool();
                                         break;
                                     default:
                                         reader.skipType(tag & 7);
@@ -2082,6 +2124,17 @@ $root.github = (function() {
                                         if (!$util.isString(message.remarks[i]))
                                             return "remarks: string[] expected";
                                 }
+                                if (message.sharingData != null && message.hasOwnProperty("sharingData")) {
+                                    if (!$util.isObject(message.sharingData))
+                                        return "sharingData: object expected";
+                                    var key = Object.keys(message.sharingData);
+                                    for (var i = 0; i < key.length; ++i)
+                                        if (!$util.isString(message.sharingData[key[i]]))
+                                            return "sharingData: string{k:string} expected";
+                                }
+                                if (message.sharingSetting != null && message.hasOwnProperty("sharingSetting"))
+                                    if (typeof message.sharingSetting !== "boolean")
+                                        return "sharingSetting: boolean expected";
                                 return null;
                             };
 
