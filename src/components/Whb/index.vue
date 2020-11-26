@@ -291,7 +291,7 @@ export default {
         numData: 0,
 
         // 历史版本 | 全部
-        hisFlag: 0,
+        hisFlag: false,
 
 
     };
@@ -370,6 +370,8 @@ export default {
           length: pageSize,
           isVersion: isVersion
       }
+
+      // console.log(data)
 
       let record = proto.ListRecordsRequest.create(data)
       let sendData = proto.ListRecordsRequest.encode(record).finish()
@@ -664,7 +666,7 @@ export default {
 
             break
         case 'ListRecordsResponse':
-          // console.log('recorder')
+          
           let record = proto.ListRecordsResponse.decode(message.data)
 
           _self.numData = record.recordNumber
@@ -695,7 +697,7 @@ export default {
             _self.logArr.push(cur_arr)
           }
 
-          _self.hisFlag = 0
+          _self.hisFlag = false
 
           break
         
@@ -722,7 +724,7 @@ export default {
             _self.logArr.push(cur_arr)
           }
 
-          _self.hisFlag = 1
+          _self.hisFlag = true
 
           break
         case 'Ping':
