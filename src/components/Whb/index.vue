@@ -160,13 +160,17 @@
                 
                     </a-tab-pane>
 
-                    <a-tab-pane key="2" tab="LogStream" force-render>
-                        <a-textarea
+                    <a-tab-pane key="2" tab="LogStream" id="logList">
+                        <!-- <a-textarea
                             v-model="value"
                             :auto-size="{ minRows: 3, maxRows: 30 }"
                             style="color: white;background: #000c17;"
                             id="textareaTmp"
-                        />
+                        /> -->
+
+                        <a-textarea v-for="(value, key) in logStream" :key="key" :id="key" :value="value" :auto-size="{ minRows: 3, maxRows: 30 }"
+                          :style="{color: 'white',background: '#000c17', display: logStr === key ? '' : 'none', visibility: logStr === key ? 'visible' : 'hidden'}" />
+                
                     </a-tab-pane>
 
                 </a-tabs>
@@ -218,7 +222,47 @@
 
                   <a-collapse>
                     <a-collapse-panel key="1" :header="logIndex.name">
-                      <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled />
+                      <a-form-model :model="logIndex" :label-col="labelCol" :wrapper-col="wrapperCol">
+                          <a-form-model-item label="name">
+                              <a-input v-model="logIndex.name" disabled />
+                          </a-form-model-item>
+                          <a-form-model-item label="policy">
+                              <a-input v-model="logIndex.policy" disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="available">
+                              <a-input v-model="logIndex.available" disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="sharingSetting">
+                            <a-input :value="logIndex.available ? 'true' : 'false'" disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="sharingData">
+                              <a-textarea v-model="logIndex.sharingData" auto-size disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="durationInMs">
+                              <a-input addon-after="ms" v-model="logIndex.durationInMs" disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="message">
+                              <a-textarea v-model="logIndex.message" auto-size disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="uploadFiles">
+                              <a-textarea v-model="logIndex.uploadFiles" auto-size disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="envs">
+                              <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled />
+                          </a-form-model-item>
+
+                          <a-form-model-item label="remarks">
+                                <a-textarea v-model="logIndex.remarks" auto-size disabled />
+                          </a-form-model-item>
+                      </a-form-model>
+                      <!-- <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled /> -->
                     </a-collapse-panel>
                   </a-collapse>
 
@@ -266,7 +310,8 @@ export default {
 
         // logstream
         logStream: {},
-        value: '',
+        // value: '',
+        logStr: '',
 
         log: '',
 
@@ -301,9 +346,9 @@ export default {
     this.initPing()
   },
   watch: {
-    //   log(newValue) {
-    //         this.value = this.value + newValue
-    //   }
+      // log(newValue) {
+      //       this.value = this.value + newValue
+      // }
   },
   methods: {
     searchHisLog() {
@@ -426,21 +471,8 @@ export default {
 
         if (key === '2') {
 
-            let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
-
-            let str = ''
+            this.logStr = this.cur_namespace + '_' + this.cur_group + '_' + this.cur_runnername + '_' + this.cur_stepname
             
-            if (this.logStream.hasOwnProperty(logStr)) {
-                this.logStream[logStr].forEach(element => {
-                    str = str + element
-                });
-
-                this.value = str
-            }
-
-            // jquery 文本框滑块移动最下方
-            let top = $("#textareaTmp")[0].scrollHeight;
-            $("#textareaTmp").scrollTop(top)
         }
     },
     changeName(value) {
@@ -490,7 +522,7 @@ export default {
           this.tmp_value.remarks = info.remarks.join('\n')
         }
 
-        if (info.sharingData === '') {
+        if (info.sharingData !== '') {
           let sharingList = []
 
           for (let shareKey in info.sharingData) {
@@ -503,19 +535,7 @@ export default {
         this.form = info
 
         // log
-        let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
-
-        let str = ''
-        
-        if (this.logStream.hasOwnProperty(logStr)) {
-            this.logStream[logStr].forEach(element => {
-                str = str + element
-            });
-
-            this.value = str
-        } else {
-            this.value = ''
-        }
+        this.logStr = this.cur_namespace + '_' + this.cur_group + '_' + this.cur_runnername + '_' + this.cur_stepname
         
     },
     clickBtn(type) {
@@ -613,13 +633,16 @@ export default {
 
           break
         case 'UpdateStep':
-            // console.log('update')
+            console.log('update')
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
+
+            console.log(upStep)
 
             let cur_id = ''
 
             for (let id in _self.runner_list) {
+                console.log(_self.runner_list[id])
                 if (_self.runner_list[id]['namespace'] === upStep['namespace'] && _self.runner_list[id]['groupName'] === upStep['groupName'] && _self.runner_list[id]['name'] === upStep['runnerName']) {
                     cur_id = id
                 }
@@ -640,6 +663,7 @@ export default {
             let selectStr = upStep['runnerName'] + ',' + upStep['step']['name'] + ',' + id
 
             _self.cur_stepname = upStep['step']['name']
+            _self.cur_runnername = upStep['runnerName']
 
             _self.selectKey = [selectStr, parseInt(cur_id)]
 
@@ -650,19 +674,20 @@ export default {
             break
         case 'LogStream':
             // namespace: "helix-saga", groupName: "cn-leiting", runnerName: "HelixSagaServer", stepName: "Zip codes", output: ""
-            // console.log('log')
+            console.log('log')
             let logs = proto.LogStreamRequest.decode(message.data)
 
-            let logStr = logs['namespace'] + ',' + logs['groupName'] + ',' + logs['runnerName'] + ',' +  logs['stepName']
+            let logStr = logs['namespace'] + '_' + logs['groupName'] + '_' + logs['runnerName'] + '_' +  logs['stepName']
 
             if (!_self.logStream.hasOwnProperty(logStr)) {
-                _self.logStream[logStr] = []
+                _self.logStream[logStr] = ''
             }
 
             _self.log = logs['output'] + "\n"
 
+            _self.logStream[logStr] = _self.logStream[logStr] + logs['output'] + "\n"
 
-            _self.logStream[logStr].push(_self.log)
+            _self.$set(_self.logStream, logStr, _self.logStream[logStr])
 
             break
         case 'ListRecordsResponse':
@@ -676,25 +701,15 @@ export default {
           // 拼接log数据
 
           for (let one in record.records) {
-            // console.log(record.records[one])
-            let cur_arr = []
             let stepInfo = proto.Step.decode(record.records[one]['stepInfo'])
 
-            // if (!_self.logArr.hasOwnProperty(record.records[one]['runnerName'])) {
-            //   _self.logArr[record.records[one]['runnerName']] = []
-            // } 
+            stepInfo = _self.getStep(stepInfo)
 
-            cur_arr['name'] = stepInfo['name']
-            cur_arr['envs'] = stepInfo['envs']
-            cur_arr['status'] = stepInfo['status']
-            cur_arr['time'] = _self.getTime(record.records[one]['createdTM'])
-            cur_arr['durationInMs'] = stepInfo['durationInMs']
-            cur_arr['runnerName'] = record.records[one]['runnerName']
-
-            // _self.logArr[record.records[one]['runnerName']].push(cur_arr)
+            stepInfo['time'] = _self.getTime(record.records[one]['createdTM'])
+            stepInfo['runnerName'] = record.records[one]['runnerName']
 
             // 全部数据
-            _self.logArr.push(cur_arr)
+            _self.logArr.push(stepInfo)
           }
 
           _self.hisFlag = false
@@ -711,17 +726,15 @@ export default {
           // 拼接log数据
 
           for (let one in recordHis.records) {
-            let cur_arr = []
             let stepInfo = proto.Step.decode(recordHis.records[one]['stepInfo'])
 
-            cur_arr['name'] = stepInfo['name']
-            cur_arr['envs'] = stepInfo['envs']
-            cur_arr['status'] = stepInfo['status']
-            cur_arr['time'] = _self.getTime(recordHis.records[one]['createdTM'])
-            cur_arr['durationInMs'] = stepInfo['durationInMs']
-            cur_arr['runnerName'] = recordHis.records[one]['runnerName']
+            stepInfo = _self.getStep(stepInfo)
 
-            _self.logArr.push(cur_arr)
+            stepInfo['time'] = _self.getTime(recordHis.records[one]['createdTM'])
+
+            stepInfo['runnerName'] = recordHis.records[one]['runnerName']
+
+            _self.logArr.push(stepInfo)
           }
 
           _self.hisFlag = true
@@ -774,6 +787,44 @@ export default {
       let init = proto.ListRunnerRequest.create(other_data)
       this.initQuest(data, proto, proto.ListRunnerRequest.encode(init).finish())
     },
+    getStep(info) {
+      if (info.messages.length !== 0) {
+        info.messages = info.messages.join('\n')
+      } else {
+        info.messages = ''
+      }
+
+      if (info.uploadFiles.length !== 0) {
+        let newArr = []
+        for (let i = 0; i < info.uploadFiles.length; i++) {
+          newArr.push(JSON.stringify(info.uploadFiles[i]))
+        }
+
+        info.uploadFiles = newArr.join('\n')
+      } else {
+        info.uploadFiles = ''
+      }
+
+      if (info.remarks.length !== 0) {
+        info.remarks = info.remarks.join('\n')
+      } else {
+        info.remarks = ''
+      }
+
+      if (info.sharingData !== '') {
+        let sharingList = []
+
+        for (let shareKey in info.sharingData) {
+          let shareStr = shareKey + ':' + info.sharingData[shareKey]
+          sharingList.push(shareStr)
+        }
+        info.sharingData = sharingList.join('\n') 
+      } else {
+        info.sharingData = ''
+      }
+
+      return info
+    }
   }
 };
 </script>
