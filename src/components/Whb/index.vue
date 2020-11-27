@@ -70,6 +70,10 @@
           查询日志
         </a-button>
 
+        <a-button type="primary" @click="searchHisLog" style="margin-left: 20px;">
+          查询历史版本
+        </a-button>
+
       </a-layout-header>
       <a-layout-content
         :style="{ margin: '24px 16px', overflow: 'initial', }"
@@ -167,8 +171,8 @@
 
                 </a-tabs>
 
-            <!-- logs  -->
-                <a-tabs v-if="logFlag">
+            <!-- logs 标签隐藏  -->
+                <!-- <a-tabs v-if="logFlag">
                     <a-tab-pane :tab="logKey" v-for="(logOne, logKey) in logArr" :key="logKey" >
                       <a-timeline style="margin-left: 15px; margin-top: 5px;">
                         <a-timeline-item v-for="(logIndex, index) in logOne" :key="index">
@@ -186,14 +190,45 @@
                         </a-timeline-item>
                       </a-timeline>
                       <div>
-                        <a-pagination v-model="current" :total="50" show-less-items />
+                        <a-pagination v-model="current" :total="logArr[logKey].length" show-less-items @change="changePage" style="margin-right: 5px; float: right;padding: 0 2px 8px 2px" />
                       </div>
                     </a-tab-pane>
                     
-                </a-tabs>
+                </a-tabs> -->
+            
+            
+            <div v-if="logFlag" style="padding: 3px">
+              <a-timeline style="margin-left: 15px; margin-top: 5px;">
+                <a-timeline-item v-for="(logIndex, index) in logArr" :key="index">
+                  <p style="margin-top: 5px;">{{ logIndex.time }} 
+                    
+                    <a-tag color="cyan" style="margin-left: 5px;">
+                        {{ logIndex.runnerName }}
+                    </a-tag>
 
+                    <a-tag color="green" style="margin-left: 5px;">
+                        {{ logIndex.durationInMs + 'ms'}}
+                    </a-tag>
+
+                    <a-tag color="blue" style="margin-left: 5px;">
+                        {{ logIndex.status }}
+                    </a-tag>
+                    
+                  </p>
+
+                  <a-collapse>
+                    <a-collapse-panel key="1" :header="logIndex.name">
+                      <a-input :addon-before="id" v-model="logIndex.envs[id]" v-for="(info, id) in logIndex.envs" :key="id" disabled />
+                    </a-collapse-panel>
+                  </a-collapse>
+
+                </a-timeline-item>
                 
-                
+              </a-timeline>
+
+              <a-pagination v-model="current" :total="numData" show-less-items @change="changePage" style="text-align: right; padding-bottom: 2px;" />
+
+            </div>  
         </div>
 
       </a-layout-content>
@@ -240,7 +275,7 @@ export default {
 
         // searchlog
         logFlag: false,
-        logArr: {},
+        logArr: [],
 
         // message || uploadfiles
         tmp_value: {
@@ -251,6 +286,12 @@ export default {
         },
 
         current: 1,
+
+        // 分页 总数
+        numData: 0,
+
+        // 历史版本 | 全部
+        hisFlag: false,
 
 
     };
@@ -265,7 +306,89 @@ export default {
     //   }
   },
   methods: {
+    searchHisLog() {
+      this.current = 1
+      if (this.cur_namespace === '') {
+         this.$message.info('当前namespace为空')
+         return
+      }
+
+      if (this.cur_group === '') {
+        this.$message.info('当前group为空')
+        return
+      }
+
+      var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+
+      let data = {
+          namespace: this.cur_namespace,
+          groupName: this.cur_group,
+          runnerName: '',
+          page: 0,
+          length: 10,
+          isVersion: 1
+      }
+
+      let record = proto.ListRecordsRequest.create(data)
+      let sendData = proto.ListRecordsRequest.encode(record).finish()
+
+      let new_data = {
+          body: 'Dashboard',
+          serviceApi: 'ListVersionRequest'
+      }
+
+      this.flag = false
+      this.logFlag = true
+
+      this.initQuest(new_data, proto, sendData)
+    },
+    changePage(page, pageSize) {
+
+      let isVersion = 0
+      let serviceApi = ''
+
+      if (this.hisFlag) {
+        isVersion = 1
+        serviceApi = 'ListVersionRequest'
+      } else {
+        serviceApi = 'ListRecordsRequest'
+      }
+
+      page = page - 1
+
+      if (page !== 0) {
+        page = page * 10
+      }
+
+      var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+
+      let data = {
+          namespace: this.cur_namespace,
+          groupName: this.cur_group,
+          runnerName: '',
+          page: page,
+          length: pageSize,
+          isVersion: isVersion
+      }
+
+      // console.log(data)
+
+      let record = proto.ListRecordsRequest.create(data)
+      let sendData = proto.ListRecordsRequest.encode(record).finish()
+
+      let new_data = {
+          body: 'Dashboard',
+          serviceApi: serviceApi
+      }
+
+      this.flag = false
+      this.logFlag = true
+
+      this.initQuest(new_data, proto, sendData)
+
+    },
     searchLog() {
+      this.current = 1
       if (this.cur_namespace === '') {
          this.$message.info('当前namespace为空')
          return
@@ -379,8 +502,6 @@ export default {
 
         this.form = info
 
-        console.log(info)
-
         // log
         let logStr = this.cur_namespace + ',' + this.cur_group + ',' + this.cur_runnername + ',' + this.cur_stepname
 
@@ -490,11 +611,9 @@ export default {
           let runner = proto.ListRunnerResponse.decode(message.data)
           _self.runner_list =  JSON.parse(JSON.stringify(runner.runners))
 
-          console.log(_self.runner_list)
-
           break
         case 'UpdateStep':
-            console.log('update')
+            // console.log('update')
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
 
@@ -506,7 +625,7 @@ export default {
                 }
             }
 
-            let stepInfo = _self.runner_list[_self.run_id]['steps']
+            let stepInfo = _self.runner_list[cur_id]['steps']
             let id = ''
 
             for (let index in stepInfo) {
@@ -526,12 +645,12 @@ export default {
 
             break
         case 'Runstep':
-            console.log('run')
-            console.log(message)
+            // console.log('run')
+            // console.log(message)
             break
         case 'LogStream':
             // namespace: "helix-saga", groupName: "cn-leiting", runnerName: "HelixSagaServer", stepName: "Zip codes", output: ""
-            console.log('log')
+            // console.log('log')
             let logs = proto.LogStreamRequest.decode(message.data)
 
             let logStr = logs['namespace'] + ',' + logs['groupName'] + ',' + logs['runnerName'] + ',' +  logs['stepName']
@@ -547,12 +666,12 @@ export default {
 
             break
         case 'ListRecordsResponse':
-          console.log('recorder')
+          
           let record = proto.ListRecordsResponse.decode(message.data)
 
-          // console.log(record.records)
+          _self.numData = record.recordNumber
 
-          _self.logArr = {}
+          _self.logArr = []
 
           // 拼接log数据
 
@@ -561,17 +680,51 @@ export default {
             let cur_arr = []
             let stepInfo = proto.Step.decode(record.records[one]['stepInfo'])
 
-            if (!_self.logArr.hasOwnProperty(record.records[one]['runnerName'])) {
-              _self.logArr[record.records[one]['runnerName']] = []
-            } 
+            // if (!_self.logArr.hasOwnProperty(record.records[one]['runnerName'])) {
+            //   _self.logArr[record.records[one]['runnerName']] = []
+            // } 
 
             cur_arr['name'] = stepInfo['name']
             cur_arr['envs'] = stepInfo['envs']
             cur_arr['status'] = stepInfo['status']
             cur_arr['time'] = _self.getTime(record.records[one]['createdTM'])
+            cur_arr['durationInMs'] = stepInfo['durationInMs']
+            cur_arr['runnerName'] = record.records[one]['runnerName']
 
-            _self.logArr[record.records[one]['runnerName']].push(cur_arr)
+            // _self.logArr[record.records[one]['runnerName']].push(cur_arr)
+
+            // 全部数据
+            _self.logArr.push(cur_arr)
           }
+
+          _self.hisFlag = false
+
+          break
+        
+        case 'ListVersionResponse':
+          let recordHis = proto.ListRecordsResponse.decode(message.data)
+
+          _self.numData = recordHis.recordNumber
+
+          _self.logArr = []
+
+          // 拼接log数据
+
+          for (let one in recordHis.records) {
+            let cur_arr = []
+            let stepInfo = proto.Step.decode(recordHis.records[one]['stepInfo'])
+
+            cur_arr['name'] = stepInfo['name']
+            cur_arr['envs'] = stepInfo['envs']
+            cur_arr['status'] = stepInfo['status']
+            cur_arr['time'] = _self.getTime(recordHis.records[one]['createdTM'])
+            cur_arr['durationInMs'] = stepInfo['durationInMs']
+            cur_arr['runnerName'] = recordHis.records[one]['runnerName']
+
+            _self.logArr.push(cur_arr)
+          }
+
+          _self.hisFlag = true
 
           break
         case 'Ping':
