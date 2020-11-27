@@ -4,6 +4,11 @@ HARBOR_DOMAIN := $(shell echo ${HARBOR})
 PROJECT := lunara-common
 DASHBOARD_IMAGE := "$(HARBOR_DOMAIN)/$(PROJECT)/publisher-dashboard:latest"
 
+env:
+	npm install yarn
+	yarn global add @vue/cli
+	yarn add jquery
+	
 web:
 	yarn build
 	docker build -t $(DASHBOARD_IMAGE) .

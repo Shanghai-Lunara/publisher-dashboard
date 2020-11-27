@@ -14,7 +14,8 @@
     "core-js": "^3.6.5",
     "jquery": "^3.5.1",
     "protobufjs": "^6.10.1",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.0",
