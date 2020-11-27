@@ -168,7 +168,7 @@
                             id="textareaTmp"
                         /> -->
 
-                        <a-textarea v-for="(value, key) in logStream" :key="key" :id="key" :value="value" :auto-size="{ minRows: 3, maxRows: 30 }"
+                        <a-textarea v-for="(value, key) in logStream" :key="key" :ref="key" :value="logStream[key]" :auto-size="{ minRows: 3, maxRows: 30 }"
                           :style="{color: 'white',background: '#000c17', display: logStr === key ? '' : 'none', visibility: logStr === key ? 'visible' : 'hidden'}" />
                 
                     </a-tab-pane>
@@ -472,7 +472,12 @@ export default {
         if (key === '2') {
 
             this.logStr = this.cur_namespace + '_' + this.cur_group + '_' + this.cur_runnername + '_' + this.cur_stepname
-            
+
+            // this.$nextTick(() => {
+            //   // $('#' + this.logStr).scrollTop($('#' + this.logStr)[0].scrollHeight)
+            //   console.log(this.$refs[this.logStr].scrollHeight)
+            // })
+
         }
     },
     changeName(value) {
@@ -637,12 +642,11 @@ export default {
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
 
-            console.log(upStep)
+            // console.log(upStep)
 
             let cur_id = ''
 
             for (let id in _self.runner_list) {
-                console.log(_self.runner_list[id])
                 if (_self.runner_list[id]['namespace'] === upStep['namespace'] && _self.runner_list[id]['groupName'] === upStep['groupName'] && _self.runner_list[id]['name'] === upStep['runnerName']) {
                     cur_id = id
                 }
