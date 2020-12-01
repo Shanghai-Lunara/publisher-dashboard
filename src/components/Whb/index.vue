@@ -638,11 +638,9 @@ export default {
 
           break
         case 'UpdateStep':
-            console.log('update')
+            // console.log('update')
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
-
-            // console.log(upStep)
 
             let cur_id = ''
 
@@ -662,6 +660,10 @@ export default {
                 }
             }
 
+            if (upStep['step']['status'] === 'Pending' && id === 0) {
+              _self.logStream = {}
+            }
+
             _self.$set(_self.runner_list[cur_id]['steps'], id, upStep['step'])
 
             let selectStr = upStep['runnerName'] + ',' + upStep['step']['name'] + ',' + id
@@ -678,7 +680,7 @@ export default {
             break
         case 'LogStream':
             // namespace: "helix-saga", groupName: "cn-leiting", runnerName: "HelixSagaServer", stepName: "Zip codes", output: ""
-            console.log('log')
+            // console.log('log')
             let logs = proto.LogStreamRequest.decode(message.data)
 
             let logStr = logs['namespace'] + '_' + logs['groupName'] + '_' + logs['runnerName'] + '_' +  logs['stepName']
