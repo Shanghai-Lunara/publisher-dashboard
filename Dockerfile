@@ -1,5 +1,5 @@
 FROM nginx:latest
 
-LABEL maintainer="1024769485@qq.com"
+LABEL maintainer="hamster-developers@lunara.net"
 
 COPY /dist /usr/share/nginx/html
