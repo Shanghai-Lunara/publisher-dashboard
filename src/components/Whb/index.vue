@@ -1,6 +1,6 @@
 <template>
   <a-layout id="components-layout-demo-custom-trigger">
-    <a-layout-sider style="width: 350px; min-width: 300px; max-width: 350px; flex: 0 0 auto; background: white;">
+    <a-layout-sider style="width: 400px; min-width: 300px; max-width: 400px; flex: 0 0 auto; background: white;">
       <div class="logo" style="text-align: center;line-height: 64px; background: black; margin: 0; color: white;">
           publisher-dashboard
       </div>
