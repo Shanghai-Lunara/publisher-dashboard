@@ -84,7 +84,8 @@
         <div :style="{ background: '#fff',}">
 
             <!-- <div> -->
-                <a-tabs default-active-key="1" @change="callback" v-if="flag">
+<!--                <a-tabs default-active-key="1" @change="callback" v-if="flag">-->
+                <a-tabs :active-key="activeKey" @change="callback" v-if="flag" @tabClick="clickTab" >
                     <a-tab-pane key="1" tab="StepInfo">
 
                         <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
@@ -338,6 +339,7 @@ export default {
         // 历史版本 | 全部
         hisFlag: false,
 
+        activeKey : "1"
 
     };
   },
@@ -480,6 +482,9 @@ export default {
 
         }
     },
+    clickTab(key) {
+        this.activeKey = key
+    },
     changeName(value) {
 
         this.selectKey = value.keyPath
@@ -561,6 +566,8 @@ export default {
         this.logStream = {}
 
         if (type === 'run') {
+            this.activeKey = '2'
+            this.callback(2)
             data = proto.RunStepRequest.create(info)
             sendData = proto.RunStepRequest.encode(data).finish()
             api = 'RunStep'
@@ -642,6 +649,7 @@ export default {
 
             let upStep = proto.UpdateStepRequest.decode(message.data)
 
+            // console.log(upStep)
             let cur_id = ''
 
             for (let id in _self.runner_list) {
@@ -660,7 +668,8 @@ export default {
                 }
             }
 
-            if (upStep['step']['status'] === 'Pending' && id === 0) {
+            // console.log(id)
+            if (upStep['step']['status'] === 'Pending') {
               _self.logStream = {}
             }
 
@@ -674,7 +683,7 @@ export default {
             _self.selectKey = [selectStr, parseInt(cur_id)]
 
             break
-        case 'Runstep':
+        case 'RunStep':
             // console.log('run')
             // console.log(message)
             break
@@ -682,7 +691,6 @@ export default {
             // namespace: "helix-saga", groupName: "cn-leiting", runnerName: "HelixSagaServer", stepName: "Zip codes", output: ""
             // console.log('log')
             let logs = proto.LogStreamRequest.decode(message.data)
-
             let logStr = logs['namespace'] + '_' + logs['groupName'] + '_' + logs['runnerName'] + '_' +  logs['stepName']
 
             if (!_self.logStream.hasOwnProperty(logStr)) {
@@ -694,7 +702,7 @@ export default {
             _self.logStream[logStr] = _self.logStream[logStr] + logs['output'] + "\n"
 
             _self.$set(_self.logStream, logStr, _self.logStream[logStr])
-
+            _self.logStr = logStr
             break
         case 'ListRecordsResponse':
           
