@@ -549,40 +549,54 @@ export default {
         
     },
     clickBtn(type) {
+        let _self = this
+        this.$confirm({
+          title: 'Are you sure ' + type + ' this task ?',
+          content: '',
+          okText: 'Yes',
+          // okType: 'danger',
+          cancelText: 'No',
+          onOk() {
+            let proto = _self.$proto.github.com.nevercase.publisher.pkg.types
 
-        var proto = this.$proto.github.com.nevercase.publisher.pkg.types
+            let info = {
+                namespace: _self.cur_namespace,
+                groupName: _self.cur_group,
+                runnerName: _self.runner_list[_self.run_id]['name'],
+                step: _self.form
+            }
 
-        let info = {
-            namespace: this.cur_namespace,
-            groupName: this.cur_group,
-            runnerName: this.runner_list[this.run_id]['name'],
-            step: this.form
-        }
+            let data = ''
+            let sendData = ''
+            let api = ''
 
-        let data = ''
-        let sendData = ''
-        let api = ''
+            _self.logStream = {}
 
-        this.logStream = {}
+            if (type === 'run') {
+                _self.activeKey = '2'
+                _self.callback(2)
+                data = proto.RunStepRequest.create(info)
+                sendData = proto.RunStepRequest.encode(data).finish()
+                api = 'RunStep'
+            } else {
+                data = proto.UpdateStepRequest.create(info)
+                sendData = proto.UpdateStepRequest.encode(data).finish()
+                api = 'UpdateStep'
+            }
 
-        if (type === 'run') {
-            this.activeKey = '2'
-            this.callback(2)
-            data = proto.RunStepRequest.create(info)
-            sendData = proto.RunStepRequest.encode(data).finish()
-            api = 'RunStep'
-        } else {
-            data = proto.UpdateStepRequest.create(info)
-            sendData = proto.UpdateStepRequest.encode(data).finish()
-            api = 'UpdateStep'
-        }
+            let new_data = {
+                body: 'Dashboard',
+                serviceApi: api
+            }
 
-        let new_data = {
-            body: 'Dashboard',
-            serviceApi: api
-        }
+            _self.initQuest(new_data, proto, sendData)
+            console.log('OK');
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
 
-        this.initQuest(new_data, proto, sendData)
     },
     clickName(value) {},
     initPing() {
