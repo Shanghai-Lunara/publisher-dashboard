@@ -551,7 +551,7 @@ export default {
     clickBtn(type) {
         let _self = this
         this.$confirm({
-          title: 'Are you sure ' + type + ' this task ?',
+          title: 'Are you sure ' + type + ' this step ?',
           content: '',
           okText: 'Yes',
           // okType: 'danger',
