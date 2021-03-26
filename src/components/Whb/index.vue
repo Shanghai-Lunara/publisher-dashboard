@@ -13,12 +13,12 @@
 					</span>
 
 					<a-menu-item style="display: flex;" v-for="(value, index) in runinfo.steps"
-						:key="runinfo.name + ',' + value.name + ',' + index">
+						:key="runinfo.name + ',' + value.name + ',' + index + ',' + value.status">
 						<!-- <span v-if="value.available == 'disable'" style="color: red;">{{value.name}}</span>
                     <span v-else>{{value.name}}</span> -->
 
 						<span style="width:50%;">{{value.name}}</span>
-						<div >
+						<div>
 							<a-tag color="red" v-if="value.available == 'disable'">
 								{{value.available}}
 							</a-tag>
@@ -26,7 +26,7 @@
 								{{value.available}}
 							</a-tag>
 							
-							<a-tag color="purple" v-if="value.status == 'Pending'" >
+							<a-tag color="purple" v-if="value.status == 'Pending'" style="margin-left: 5px;">
 								{{value.status}}
 							</a-tag>
 							
@@ -46,9 +46,6 @@
 								{{value.status}}
 							</a-tag>
 						</div>
-						
-
-
 					</a-menu-item>
 				</a-sub-menu>
 			</a-menu>
@@ -208,21 +205,23 @@
 					<div v-if="logFlag" style="padding: 3px">
 						<a-timeline style="margin-left: 15px; margin-top: 5px;">
 							<a-timeline-item v-for="(logIndex, index) in logArr" :key="index">
-								<p style="margin-top: 5px;">{{ logIndex.time }}
+								<div style="margin-top: 5px; display:flex;">
+									<span style="width:20%">{{ logIndex.time }}</span>
+									<div>
+										<a-tag color="cyan" style="margin-left: 5px; width:80px; text-align:center;">
+											{{ logIndex.runnerName }}
+									
+										</a-tag>
 
-									<a-tag color="cyan" style="margin-left: 5px;">
-										{{ logIndex.runnerName }}
-									</a-tag>
+										<a-tag color="green" style="margin-left: 5px; width:80px; text-align:center;">
+											{{ logIndex.durationInMs + 'ms'}}
+										</a-tag>
 
-									<a-tag color="green" style="margin-left: 5px;">
-										{{ logIndex.durationInMs + 'ms'}}
-									</a-tag>
-
-									<a-tag color="blue" style="margin-left: 5px;">
-										{{ logIndex.status }}
-									</a-tag>
-
-								</p>
+										<a-tag color="blue" style="margin-left: 5px; width:80px; text-align:center;">
+											{{ logIndex.status }}
+										</a-tag>
+									</div>
+								</div>
 
 								<a-collapse>
 									<a-collapse-panel key="1" :header="logIndex.name">
@@ -306,7 +305,7 @@
 
 				run_id: '',
 				step_id: '',
-
+				
 				// content
 				flag: false,
 				labelCol: {
@@ -323,7 +322,8 @@
 				logStr: '',
 
 				log: '',
-
+				//状态
+				runState: '',
 				// 自动切换
 				selectKey: [],
 
@@ -511,6 +511,7 @@
 				let arr = value.keyPath[0].split(',')
 
 				let key = arr[2]
+				this.runState = arr[3]
 
 				let info = this.runner_list[index]['steps'][key]
 
@@ -568,6 +569,13 @@
 
 			},
 			clickBtn(type) {
+				if(this.runState == 'Running'){
+					this.$warning({
+						title: 'This is a warning message',
+						content: 'Running正在运行中，请稍等！',
+					});
+					return;
+				}
 				let _self = this
 				this.$confirm({
 					title: 'Are you sure ' + type + ' this step ?',
