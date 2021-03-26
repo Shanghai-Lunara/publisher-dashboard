@@ -205,10 +205,10 @@
 					<div v-if="logFlag" style="padding: 3px">
 						<a-timeline style="margin-left: 15px; margin-top: 5px;">
 							<a-timeline-item v-for="(logIndex, index) in logArr" :key="index">
-								<div style="margin-top: 5px; display:flex;">
-									<span style="width:20%">{{ logIndex.time }}</span>
+								<div style="display:flex;">
+									<span style="width:20%; margin-top:5px;">{{ logIndex.time }}</span>
 									<div>
-										<a-tag color="cyan" style="margin-left: 5px; width:80px; text-align:center;">
+										<a-tag color="cyan" style="margin: 5px; width:100px; text-align:center;">
 											{{ logIndex.runnerName }}
 									
 										</a-tag>
