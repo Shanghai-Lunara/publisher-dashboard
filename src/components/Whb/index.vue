@@ -53,7 +53,7 @@
 		</a-layout-sider>
 		<a-layout>
 			<a-layout-header style="background: #fff; padding: 0">
-				<a-select id="namespace" placeholder="namespace" style="width: 200px;margin-left: 20px;"
+				<a-select id="namespace" v-model="cur_namespace" placeholder="namespace" style="width: 200px;margin-left: 20px;"
 					@change="spaceChange">
 					<a-select-option v-for="namespace in namespaces" :key="namespace" :value="namespace">
 						{{namespace}}
@@ -73,7 +73,11 @@
 				<a-button type="primary" @click="searchHisLog" style="margin-left: 20px;">
 					查询历史版本
 				</a-button>
-
+				
+				<a-button type="primary" @click="loginOut" style="margin-left:20px;">
+					退出
+				</a-button>
+				
 			</a-layout-header>
 			<a-layout-content :style="{ margin: '24px 16px', overflow: 'initial', }">
 
@@ -305,7 +309,7 @@
 
 				run_id: '',
 				step_id: '',
-				
+				menuvalue: '',
 				// content
 				flag: false,
 				labelCol: {
@@ -316,6 +320,8 @@
 				},
 				form: '',
 
+				runningvalue: '',
+				connectvalue: '',
 				// logstream
 				logStream: {},
 				// value: '',
@@ -504,7 +510,8 @@
 				this.activeKey = key
 			},
 			changeName(value) {
-
+				this.menuvalue = value;
+				console.log('menuvalue:', this.menuvalue)
 				this.selectKey = value.keyPath
 
 				let index = value.keyPath[1]
@@ -654,15 +661,24 @@
 				let message = {
 					data: other_data,
 					type: msg
+					
 				}
 
 				let data = proto.Request.create(message)
 				let _self = this
+				//debugger
 				let sendData = proto.Request.encode(data).finish()
+				//sendData.cookie= this.$cookies.get('test-cookies');
+				//console.log(sendData.cookie);
 
-				this.$socket(sendData, function(res) {
+				var stateinfo = this.$socket(sendData, function(res) {
 					_self.returnRes(res, _self)
 				})
+				//console.log("stateinfo:",stateinfo)
+				if (stateinfo == 'disconnect') {
+					this.connectvalue = 'disconnect';
+					//console.log('网络断开了:', this.connectvalue)
+				}
 			},
 			returnRes(res, _self) {
 
@@ -674,6 +690,8 @@
 					case 'ListNamespace':
 						let namespaces = proto.ListNamespaceResponse.decode(message.data)
 						_self.namespaces = namespaces.items
+						_self.cur_namespace=_self.namespaces[0];
+						_self.spaceChange(_self.cur_namespace);
 						break
 					case 'ListGroupName':
 						let group = proto.ListGroupNameResponse.decode(message.data)
@@ -736,6 +754,8 @@
 
 						break
 					case 'RunStep':
+						_self.runningvalue = 'running';
+						//console.log("点击running：", _self.runningvalue)
 						// console.log('run')
 						// console.log(message)
 						break
@@ -808,6 +828,13 @@
 
 						break
 					case 'Ping':
+						//console.log("Ping")
+						if (_self.runningvalue == 'running' && _self.connectvalue == 'disconnect') {
+							//console.log("断开重连成功，更新页面")
+							_self.spaceChange(_self.cur_namespace)
+							_self.runningvalue = '';
+							_self.connectvalue = '';
+						}
 						break
 					default:
 						break
@@ -891,11 +918,17 @@
 				}
 
 				return info
+			},
+			loginOut(){
+				/* this.$cookies.remove('username');
+				this.$cookies.remove('password'); */
+				//this.$cookies.remove('test-cookies');
+				this.$router.push('/login');
 			}
 		}
 	};
 </script>
-<style>
+<style scoped>
 	#components-layout-demo-custom-trigger {
 		height: 100%;
 		width: 100%;
