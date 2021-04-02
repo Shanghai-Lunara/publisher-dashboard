@@ -80,6 +80,7 @@
 							//'Content-Type': "application/x-www-form-urlencoded"
 						},
 						data: params,
+						withCredentials : true
 					}).then((response) => {
 						
 						//console.log(this.$cookies.get('test-cookies'));

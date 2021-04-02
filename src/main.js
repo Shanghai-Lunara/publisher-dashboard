@@ -25,7 +25,7 @@ Vue.prototype.$proto = proto
 Vue.prototype.$cookies = vueCookies;
 Vue.prototype.$axios = axios;
 
-//axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true
 
 new Vue({
   render: h => h(App),
