@@ -15,7 +15,6 @@ function initWebSocket() {
   websock.binaryType = 'arraybuffer'
   websock.onopen = function() {
     websocketopen()
-	//console.log(cookies.get('test-cookies'));
   }
   websock.onmessage = function(e) {
     websockonmessage(e)

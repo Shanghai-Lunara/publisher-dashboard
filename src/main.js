@@ -23,7 +23,7 @@ Vue.prototype.$socket = sendSock
 Vue.prototype.$proto = proto
 
 Vue.prototype.$cookies = vueCookies;
-Vue.prototype.$axios = axios;
+//Vue.prototype.$axios = axios;
 
 axios.defaults.withCredentials = true
 

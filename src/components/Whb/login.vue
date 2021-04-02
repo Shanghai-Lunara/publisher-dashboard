@@ -74,15 +74,18 @@
 					params.append('username', values.userName)
 					params.append('password', values.password)
 					this.$axios({
-						url: '/api/login',//接口 
+						url: 'http://publisher-scheduler.k8s.lunara.net:6969/login',//接口 
 						method: 'get',
 						headers: { //请求头设置为表单提交的请求头
 							//'Content-Type': "application/x-www-form-urlencoded"
+							Token: token
 						},
 						data: params,
-						withCredentials : true
+						//withCredentials : true
 					}).then((response) => {
-						
+						let cookies = this.$cookies.get('test-cookies');
+						this.$cookies.set("cookies",cookies);
+						console.log(this.$cookies.get('cookies'));
 						//console.log(this.$cookies.get('test-cookies'));
 						let redirect = decodeURIComponent(
 							this.$route.query.redirect || "/index"
