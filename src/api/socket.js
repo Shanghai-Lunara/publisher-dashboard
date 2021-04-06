@@ -5,13 +5,12 @@ let timeout = 60 * 1000 // 1分钟一次心跳
 let timeoutCd = null //心跳倒计时
 let serverTimeoutCd = null //心跳倒计时
 let timeoutnum = null //断开 重连倒计时
-import cookies from 'vue-cookies';
 
-initWebSocket()//进入即加载
+//initWebSocket()//进入即加载
 
 function initWebSocket() {
   //debugger
-  websock = new WebSocket(process.env.VUE_APP_BASE_API)
+  websock = new WebSocket(process.env.VUE_APP_BASE_API+"/xxxxxxxxxxx")
   websock.binaryType = 'arraybuffer'
   websock.onopen = function() {
     websocketopen()
@@ -96,18 +95,19 @@ function startTime(){
 	timeoutCd && clearTimeout(timeoutCd)
 	serverTimeoutCd && clearTimeout(serverTimeoutCd)
 	timeoutCd = setTimeout(() => {
-		if(websock.readyState == 1){
+		/* if(websock.readyState == 1){
 			websock.send("heartCheck")
 		}else{
 			//重连
 			reconnect()
-		}
+		} */
 		//超时关闭
 		serverTimeoutCd = setTimeout(() => {
 			websock.close()
 		},timeout)
 	},timeout)
 }
+
 
 //重置心跳
 function resetTime(){
@@ -121,4 +121,4 @@ function websocketopen() {
   startTime()
 }
 
-export { sendSock }
+export { initWebSocket,sendSock }

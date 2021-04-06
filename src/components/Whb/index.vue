@@ -291,7 +291,6 @@
 <script>
 	import $ from 'jquery'
 
-
 	export default {
 		data() {
 			return {
@@ -358,6 +357,7 @@
 			};
 		},
 		mounted() {
+			this.$initWebSocket()
 			this.initNameSpace()
 			this.initPing()
 		},
@@ -668,9 +668,6 @@
 				let _self = this
 				//debugger
 				let sendData = proto.Request.encode(data).finish()
-				//sendData.cookie= this.$cookies.get('test-cookies');
-				//console.log(sendData.cookie);
-
 				var stateinfo = this.$socket(sendData, function(res) {
 					_self.returnRes(res, _self)
 				})

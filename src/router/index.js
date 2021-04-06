@@ -28,17 +28,26 @@ const router = new Router({
 	]
 })
 
-/* router.beforeEach((to,from,next)=>{	
-	var name = $cookies.get('username');
-	if(to.meta.requireAuth){
-		if(name){
-			next()
-		}else{
-			next({path:'/login'})
-		}
-	}else{
-		next()
-	}
-}) */
+// router.beforeEach((to,from,next)=>{	
+// 	var name = $cookies.get('username');
+// 	if(to.meta.requireAuth){
+// 		if(name){
+// 			next()
+// 		}else{
+// 			next({path:'/login'})
+// 			// let token = localStorage.getItem('Authorization');
+// 			// if (token === 'null' || token === '') { 
+// 			// 	next('/login'); 
+// 			// } else { 
+// 			// 	next(); 
+// 			// } 
+// 		}
+// 	}else{
+// 		next()
+// 	}
+// })
 
 export default router
+
+
+

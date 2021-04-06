@@ -78,14 +78,14 @@
 						method: 'get',
 						headers: { //请求头设置为表单提交的请求头
 							//'Content-Type': "application/x-www-form-urlencoded"
-							Token: token
+							//'Token': "xxxxxxxxxx",
+							
 						},
 						data: params,
 						//withCredentials : true
 					}).then((response) => {
-						let cookies = this.$cookies.get('test-cookies');
-						this.$cookies.set("cookies",cookies);
-						console.log(this.$cookies.get('cookies'));
+						//this.$cookies.set("cookies","cookies");
+						//console.log(this.$cookies.get('cookies'));
 						//console.log(this.$cookies.get('test-cookies'));
 						let redirect = decodeURIComponent(
 							this.$route.query.redirect || "/index"

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 
+import { initWebSocket } from './api/socket'
 import { sendSock } from './api/socket'
 import proto from './proto/proto.js'
 
@@ -19,13 +20,14 @@ Vue.use(vueAxios,axios)
 //Vue.use(vueCookies)
 Vue.use(vuex)
 
+Vue.prototype.$initWebSocket = initWebSocket
 Vue.prototype.$socket = sendSock
 Vue.prototype.$proto = proto
 
 Vue.prototype.$cookies = vueCookies;
-//Vue.prototype.$axios = axios;
+Vue.prototype.$axios = axios;
 
-axios.defaults.withCredentials = true
+//axios.defaults.withCredentials = true
 
 new Vue({
   render: h => h(App),
