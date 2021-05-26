@@ -10,7 +10,7 @@ env:
 	yarn add jquery
 	
 web:
-	yarn build
+	npm run build
 	docker build -t $(DASHBOARD_IMAGE) .
 	docker push $(DASHBOARD_IMAGE)
 	rm -rf dist

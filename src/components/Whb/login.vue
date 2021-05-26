@@ -74,7 +74,7 @@
 					params.append('username', values.userName)
 					params.append('password', values.password)
 					this.$axios({
-						url: '/api/login',//接口 
+						url: process.env.VUE_APP_BASE_URL + '/login',//接口 
 						method: 'get',
 						headers: { //请求头设置为表单提交的请求头
 							//'Content-Type': "application/x-www-form-urlencoded"
