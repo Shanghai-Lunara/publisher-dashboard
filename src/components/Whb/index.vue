@@ -305,7 +305,7 @@
 				cur_runnername: '',
 				cur_stepname: '',
 				keysid: [],
-				runner_list: '',
+				runner_list: [],
 
 				run_id: '',
 				step_id: '',
