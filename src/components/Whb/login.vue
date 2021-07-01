@@ -2,7 +2,7 @@
 	<div class="login-bg">
 		<div class="login">
 
-			<a-form id="components-form-demo-normal-login" :form="form" class="login-form" @submit="handleSubmit">
+			<!-- <a-form id="components-form-demo-normal-login" :form="form" class="login-form" @submit="handleSubmit">
 				<div class="title-container">
 					<h3 class="title">Login</h3>
 				</div>
@@ -44,7 +44,7 @@
 				</div>
 
 
-			</a-form>
+			</a-form> -->
 		</div>
 
 	</div>
@@ -61,54 +61,11 @@
 		    };
 		},
 		beforeCreate() {
-		  this.form = this.$form.createForm(this, { name: 'normal_login' });
+			let redirect = decodeURIComponent(this.$route.query.redirect || "/index");
+			this.$router.push({path: redirect})
+		  // this.form = this.$form.createForm(this, { name: 'normal_login' });
 		},
 		methods: {
-			handleSubmit(e) {
-			  e.preventDefault();
-			  this.form.validateFields((err, values) => {
-			    if (!err) {
-					
-					//得到params对象，用来接收参数
-					let params = new URLSearchParams() 
-					params.append('username', values.userName)
-					params.append('password', values.password)
-					this.$axios({
-						url: process.env.VUE_APP_BASE_URL + '/login',//接口 
-						method: 'get',
-						headers: { //请求头设置为表单提交的请求头
-							//'Content-Type': "application/x-www-form-urlencoded"
-						},
-						data: params,
-					}).then((response) => {
-						
-						//console.log(this.$cookies.get('test-cookies'));
-						let redirect = decodeURIComponent(
-							this.$route.query.redirect || "/index"
-						);
-						this.$router.push({path: redirect});
-						/* if (response.data.success == true) {
-							//this.$cookies.set("status", "logined", 30 * 60); // 设置cookie中存放的生命周期
-							let redirect = decodeURIComponent(
-								this.$route.query.redirect || "/index"
-							);
-							this.$router.push({path: redirect});
-						} else {
-							this.$error({
-								title: 'This is an error message',
-								content: '用户名或密码错误！请重新登录！'
-							});
-						} */
-						
-					}).catch((response) => {
-							console.log(response);
-					});
-							
-			      
-					
-				}
-			});
-		}
 		}
 	};
 </script>

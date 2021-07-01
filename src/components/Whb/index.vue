@@ -74,9 +74,9 @@
 					查询历史版本
 				</a-button>
 				
-				<a-button type="primary" @click="loginOut" style="margin-left:20px;">
+				<!-- <a-button type="primary" @click="loginOut" style="margin-left:20px;">
 					退出
-				</a-button>
+				</a-button> -->
 				
 			</a-layout-header>
 			<a-layout-content :style="{ margin: '24px 16px', overflow: 'initial', }">
@@ -690,7 +690,11 @@
 					case 'ListNamespace':
 						let namespaces = proto.ListNamespaceResponse.decode(message.data)
 						_self.namespaces = namespaces.items
-						_self.cur_namespace=_self.namespaces[0];
+						if(localStorage.getItem('cur_namespace')){
+							_self.cur_namespace=localStorage.getItem('cur_namespace')
+						}else{
+							_self.cur_namespace=_self.namespaces[0];
+						}						
 						_self.spaceChange(_self.cur_namespace);
 						break
 					case 'ListGroupName':
@@ -847,6 +851,7 @@
 			spaceChange(value) {
 
 				this.cur_namespace = value
+				localStorage.setItem('cur_namespace', value)
 				this.cur_group = ''
 				this.groups = ''
 				this.runner_list = ''
